@@ -48,24 +48,9 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 2. Many desktop publishing packagess.
 3. Many desktop publishing packages.
 
-## 🧐 How to Contribute
-
-We welcome and appreciate contributions to enhance Lorem Ipsum. Follow the steps below to contribute:
-
-1. Fork the Lorem Ipsum repository by clicking on the "Fork" button at the top right of the repository page. This creates a copy of the repository in your GitHub account.
-
-2. Clone the forked repository to your local machine. Replace `[your-username]` with your GitHub username.
-
-   ```bash
-   git clone https://github.com/[your-username]/Lorem-Ipsum.git
-
 ## 💞 Acknowledgments
 
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-
-## 📜 License
-
-This project is licensed under the [MIT License](LICENSE). See the LICENSE file for more details.
 
 ## 👩‍💻 Membros
 
