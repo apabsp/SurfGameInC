@@ -71,16 +71,24 @@ This project is licensed under the [MIT License](LICENSE). See the LICENSE file 
 
 <ul>
   <li>
-    <a href="https://github.com/Thomazrlima">Thomaz Lima</a> -
-    trl@cesar.school 📩
+    <a href="https://github.com/daviruy61">Davi Gomes</a> -
+    dgfra@cesar.school 📩
   </li>
   <li>
-    <a href="https://github.com/hsspedro">Pedro Henrique Silva</a> -
-    phss@cesar.school 📩
+    <a href="https://github.com/apabsp">Antonio Paulo</a> -
+    apabsp@cesar.school 📩
   </li>
   <li>
-    <a href="https://github.com/Sofia-Saraiva">Sofia Saraiva</a> -
-    spscl@cesar.school 📩
+    <a href="https://github.com/lariisantos">Larissa Santos</a> -
+    lss2@cesar.school 📩
+  </li>
+  <li>
+    <a href="https://github.com/helotanaka">Heloisa Tanaka</a> -
+    htf@cesar.school 📩
+  </li>
+  <li>
+    <a href="https://github.com/ClaraMachadoAj">Clara Machado</a> -
+    cma3@cesar.school 📩
   </li>
 </ul>
 
