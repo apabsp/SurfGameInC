@@ -95,26 +95,42 @@ This project is licensed under the [MIT License](LICENSE). See the LICENSE file 
 <table>
   <tr>
     <td align="center">
-      <a href="https://github.com/Thomazrlima">
-        <img src="https://avatars3.githubusercontent.com/Thomazrlima" width="100px;" alt="Foto de Thomaz"/><br>
+      <a href="https://github.com/daviruy61">
+        <img src="https://avatars3.githubusercontent.com/daviruy61" width="100px;" alt="Foto do Davi"/><br>
         <sub>
-          <b>Thomaz R. Lima</b>
+          <b>Davi Gomes</b>
         </sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/hsspedro">
-        <img src="https://avatars.githubusercontent.com/hsspedro" width="100px;" alt="Foto de Pedro"/><br>
+      <a href="https://github.com/apabsp">
+        <img src="https://avatars.githubusercontent.com/apabsp" width="100px;" alt="Foto do Antonio"/><br>
         <sub>
-          <b>Pedro S. Souza</b>
+          <b>Antonio Paulo</b>
         </sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/Sofia-Saraiva">
-        <img src="https://avatars.githubusercontent.com/Sofia-Saraiva" width="100px;" alt="Foto de Sofia"/><br>
+      <a href="https://github.com/lariisantos">
+        <img src="https://avatars.githubusercontent.com/lariisantos" width="100px;" alt="Foto da Larissa"/><br>
         <sub>
-          <b>Sofia Saraiva</b>
+          <b>Larissa Santos</b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/helotanaka">
+        <img src="https://avatars.githubusercontent.com/helotanaka" width="100px;" alt="Foto da tanaka"/><br>
+        <sub>
+          <b>Heloisa Tanaka</b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/ClaraMachadoAj">
+        <img src="https://avatars.githubusercontent.com/ClaraMachadoAj" width="100px;" alt="Foto da clara"/><br>
+        <sub>
+          <b>ClaraMachadoAj</b>
         </sub>
       </a>
     </td>
