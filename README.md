@@ -44,8 +44,14 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 
 ## 🪄 How to Use
 
-1. Many desktop publishing packages.
-2. Many desktop publishing packagess.
+1. no terminal linux dentro do diretorio onde se encontra o jogo coloque.
+   ```
+   gcc *.c -o surfgame -lraylib
+   ```
+2. Após isso apenas rode o jogo.
+   ```
+   ./surfgame
+   ```
 3. Many desktop publishing packages.
 
 ## 💞 Acknowledgments
