@@ -1,28 +1,5 @@
 # SurfGameInC
 
-# 🎨 Template-1
-
-<div id="top" align="center">
-    <a href="https://github.com/Thomazrlima/MyAnimeList-Theme#readme">
-        <img src="https://raw.githubusercontent.com/iuricode/readme-template/main/repositorio/imagem.png" width="100" height="100">
-    </a>
-  <br>
-  <br>
-</div>
-
-<p align="center">
-  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/Thomazrlima/README.md-Templates?color=2e51a1&labelColor=000000">
-
-  <a href="https://www.linkedin.com/in/Thomazrlima/">
-    <img alt="Made by" src="https://img.shields.io/static/v1?label=made%20by&message=Thomaz%20Lima&color=2e51a1&labelColor=000000)](https://www.linkedin.com/in/johnggli/">
-  </a>
-
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/Thomazrlima/README.md-Templates?color=2e51a1&labelColor=000000">
-
-  <a href="https://github.com/Thomazrlima/MyAnimeList-Theme/commits/master">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Thomazrlima/README.md-Templates?color=2e51a1&labelColor=000000)](https://github.com/Thomazrlima/MyAnimeList-Theme/commits/master">
-  </a>
-</p>
 
 ## 😶‍🌫️ Overview
 
