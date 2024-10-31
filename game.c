@@ -7,13 +7,13 @@
 typedef struct Enemy {
     Vector2 position;
     float radius;
-    bool isSpecial; // para obstaculos que nao acabam com o jogo
+    bool isSpecial; // moedas
+    Texture2D texture; //textura do objeto criado
     struct Enemy *next;
 } Enemy;
 
-
 void StartGame();
-Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial);
+Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, Texture2D normalTexture, Texture2D specialTexture);
 void UpdateEnemies(Enemy *head, float speed);
 Enemy *RemoveEnemies(Enemy *head, int screenWidth, int *score);
 int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score);
@@ -21,9 +21,8 @@ void DrawEnemies(Enemy *head);
 void FreeEnemies(Enemy *head);
 
 void StartGame() {
-    const int screenWidth = 800;
+    const int screenWidth = 900;
     const int screenHeight = 600;
-
 
     Vector2 playerPos = { 100, screenHeight / 2 };
     float playerRadius = 20;
@@ -31,24 +30,32 @@ void StartGame() {
     float enemySpeed = 200;
     Enemy *enemies = NULL;
 
-    //personagem
+    //texturas
     Texture2D playerTexture = LoadTexture("imagens/picole.png");
+    Texture2D enemyTexture = LoadTexture("imagens/tubaraoobstaculo.png");
+    Texture2D specialEnemyTexture = LoadTexture("imagens/gelo.png");
 
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
         // Movimento do jogador
         if (IsKeyDown(KEY_W) && playerPos.y - playerRadius > 0) {
-            playerPos.y -= 5;
+            playerPos.y -= 4;
         }
         if (IsKeyDown(KEY_S) && playerPos.y + playerRadius < screenHeight) {
-            playerPos.y += 5;
+            playerPos.y += 4;
+        }
+        if (IsKeyDown(KEY_A) && playerPos.y - playerRadius > 0) {
+            playerPos.x -= 4;
+        }
+        if (IsKeyDown(KEY_D) && playerPos.y + playerRadius < screenHeight) {
+            playerPos.x += 4;
         }
 
-        // Adiciona novos inimigos periodicamente
+        // Adiciona novos inimigos
         if (GetRandomValue(0, 100) < 3) {
             bool isSpecial = GetRandomValue(0, 4) == 0;
-            enemies = AddEnemy(enemies, (Vector2){screenWidth + 20, GetRandomValue(20, screenHeight - 20)}, 20, isSpecial);
+            enemies = AddEnemy(enemies, (Vector2){screenWidth + 20, GetRandomValue(20, screenHeight - 20)}, 20, isSpecial, enemyTexture, specialEnemyTexture);
         }
 
         // Atualiza a posição dos inimigos
@@ -64,34 +71,37 @@ void StartGame() {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        // personagem e tamanho
+        // Renderiza o personagem
         float scale = 0.18f;
         DrawTextureEx(playerTexture, (Vector2){playerPos.x - playerTexture.width * scale / 2, playerPos.y - playerTexture.height * scale / 2}, 0.0f, scale, WHITE);
 
         // Desenha os inimigos
         DrawEnemies(enemies);
         DrawText(TextFormat("Score: %i", score), 10, 10, 20, DARKGRAY);
-        
+
         EndDrawing();
     }
 
-    // Libera a memória da textura do personagem
+    // Libera a memória das texturas
     UnloadTexture(playerTexture);
+    UnloadTexture(enemyTexture);
+    UnloadTexture(specialEnemyTexture); // Libere a textura especial
     FreeEnemies(enemies);
-    
-    // inicia
+
+    // Inicia o menu
     int menuOption = ShowMenu();
     if (menuOption == 1) {
         StartGame();
     }
 }
 
-// Adiciona um novo inimigo à lista
-Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial) {
+// Adiciona um novo inimigo à lista com textura específica para inimigos especiais
+Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, Texture2D normalTexture, Texture2D specialTexture) {
     Enemy *newEnemy = (Enemy *)malloc(sizeof(Enemy));
     newEnemy->position = position;
     newEnemy->radius = radius;
     newEnemy->isSpecial = isSpecial;
+    newEnemy->texture = isSpecial ? specialTexture : normalTexture; // Define a textura baseada em isSpecial
     newEnemy->next = head;
     return newEnemy;
 }
@@ -103,7 +113,7 @@ void UpdateEnemies(Enemy *head, float speed) {
     }
 }
 
-// Remove obstaculos fora da tela
+// Remove obstáculos fora da tela
 Enemy *RemoveEnemies(Enemy *head, int screenWidth, int *score) {
     Enemy *current = head;
     Enemy *previous = NULL;
@@ -126,14 +136,11 @@ Enemy *RemoveEnemies(Enemy *head, int screenWidth, int *score) {
     return head;
 }
 
-// Desenha todos os inimigos, diferenciando os amarelos
+// Desenha todos os inimigos usando a textura atribuída
 void DrawEnemies(Enemy *head) {
     for (Enemy *e = head; e != NULL; e = e->next) {
-        if (e->isSpecial) {
-            DrawCircleV(e->position, e->radius, YELLOW); // Desenha obstáculos especiais em amarelo
-        } else {
-            DrawCircleV(e->position, e->radius, RED);    // Desenha obstáculos normais em vermelho
-        }
+        float scale = 0.35f; // Tamanho objeto
+        DrawTextureEx(e->texture, (Vector2){e->position.x - e->texture.width * scale / 2, e->position.y - e->texture.height * scale / 2}, 0.0f, scale, WHITE);
     }
 }
 
@@ -145,9 +152,9 @@ int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **ene
     while (current != NULL) {
         if (CheckCollisionCircles(playerPos, playerRadius, current->position, current->radius)) {
             if (current->isSpecial) {
-                (*score)++; // Incrementa a pontuação ao tocar um obstáculo amarelo
+                (*score)++; // Incrementa a pontuação ao tocar um obstáculo especial
 
-                // Remove o obstáculo amarelo da lista
+                // Remove o obstáculo especial da lista
                 if (previous == NULL) {
                     *enemies = current->next;
                 } else {
@@ -157,7 +164,7 @@ int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **ene
 
                 return 0;
             } else {
-                return 1; // Colisão com obstáculo vermelho termina o jogo
+                return 1; // Colisão com obstáculo normal termina o jogo
             }
         }
         previous = current;
