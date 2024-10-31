@@ -12,7 +12,9 @@ int main(void) {
     if (menuOption == 1) {  // Se a opção "Play" foi selecionada
         StartGame();
     }
-    
+    if (menuOption == 3) {  // Se a opção "Play" foi selecionada
+        CloseWindow();
+    }
     // Fechar a janela
     CloseWindow();
 

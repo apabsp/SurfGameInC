@@ -21,7 +21,7 @@ void DrawEnemies(Enemy *head);
 void FreeEnemies(Enemy *head);
 
 void StartGame() {
-    const int screenWidth = 900;
+    const int screenWidth = 800;
     const int screenHeight = 600;
 
     Vector2 playerPos = { 100, screenHeight / 2 };
@@ -40,16 +40,16 @@ void StartGame() {
     while (!WindowShouldClose()) {
         // Movimento do jogador
         if (IsKeyDown(KEY_W) && playerPos.y - playerRadius > 0) {
-            playerPos.y -= 4;
+            playerPos.y -= 3.6;
         }
         if (IsKeyDown(KEY_S) && playerPos.y + playerRadius < screenHeight) {
-            playerPos.y += 4;
+            playerPos.y += 3.6;
         }
-        if (IsKeyDown(KEY_A) && playerPos.y - playerRadius > 0) {
-            playerPos.x -= 4;
+        if (IsKeyDown(KEY_A) && playerPos.x - playerRadius > 0) {
+            playerPos.x -= 3.6;
         }
-        if (IsKeyDown(KEY_D) && playerPos.y + playerRadius < screenHeight) {
-            playerPos.x += 4;
+        if (IsKeyDown(KEY_D) && playerPos.x + playerRadius < screenWidth) {
+            playerPos.x += 3.6;
         }
 
         // Adiciona novos inimigos
@@ -69,7 +69,7 @@ void StartGame() {
 
         // Renderização
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(SKYBLUE);
 
         // Renderiza o personagem
         float scale = 0.18f;

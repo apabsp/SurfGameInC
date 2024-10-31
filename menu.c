@@ -36,7 +36,7 @@ int ShowMenu(void) {
 
         // Desenhar o menu
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(SKYBLUE);
 
         // Desenha botões
         DrawRectangleRec(playButton, LIGHTGRAY);
@@ -44,9 +44,9 @@ int ShowMenu(void) {
         DrawRectangleRec(quitButton, LIGHTGRAY);
 
         // Desenha o texto dos botões
-        DrawText("Play", playButton.x + 65, playButton.y + 15, 20, BLACK);
-        DrawText("Settings", settingsButton.x + 50, settingsButton.y + 15, 20, BLACK);
-        DrawText("Quit", quitButton.x + 65, quitButton.y + 15, 20, BLACK);
+        DrawText("Jogar", playButton.x + 65, playButton.y + 15, 20, BLACK);
+        DrawText("Configurações", settingsButton.x + 50, settingsButton.y + 15, 20, BLACK);
+        DrawText("Sair", quitButton.x + 65, quitButton.y + 15, 20, BLACK);
 
         EndDrawing();
 
