@@ -1,5 +1,5 @@
-#include "game.h"  // Arquivo que contém o protótipo da função StartGame
-#include "menu.h"  // Arquivo que contém o protótipo da função ShowMenu
+#include "game.h"
+#include "menu.h" 
 #include "raylib.h"
 
 int main(void) {
