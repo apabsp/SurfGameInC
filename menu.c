@@ -22,16 +22,20 @@ int ShowMenu(void) {
 
     MenuOption selectedOption = MENU_NONE;
 
-    SetTargetFPS(60);  // Defina o FPS para 60
+    SetTargetFPS(60);
 
     // Loop principal do menu
     while (!WindowShouldClose()) {
-        // Obtém a posição do mouse
         Vector2 mousePoint = GetMousePosition();
 
-        // Verifica se algum botão foi clicado
+        // Verifica se o botão foi pressionado
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            selectedOption = CheckButtonPressed(playButton, mousePoint);
+            if (CheckCollisionPointRec(mousePoint, playButton)) {
+                return 1;  // "Play" foi selecionado
+            } else if (CheckCollisionPointRec(mousePoint, quitButton)) {
+                CloseWindow();
+                return 0;       // "Sair" foi selecionado
+            }
         }
 
         // Desenhar o menu
