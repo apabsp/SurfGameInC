@@ -1,8 +1,8 @@
 #include "raylib.h"
 #include "menu.h"
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 900
 
 typedef enum MenuOption {
     MENU_NONE = 0,

@@ -12,22 +12,40 @@ typedef struct Enemy {
     struct Enemy *next;
 } Enemy;
 
+typedef struct Cloud {
+    Vector2 position;
+    float speed;
+    float size;
+} Cloud;
+
+#define MAX_CLOUDS 4 // Defina o número máximo de nuvens
+void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight);
+void UpdateClouds(Cloud clouds[], int screenWidth);
+void DrawClouds(Cloud clouds[]);
+
 void StartGame();
 Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, Texture2D normalTexture, Texture2D specialTexture);
 void UpdateEnemies(Enemy *head, float speed);
 Enemy *RemoveEnemies(Enemy *head, int screenWidth, int *score);
-int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score);
+int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score,Sound coinSound);
 void DrawEnemies(Enemy *head);
 void FreeEnemies(Enemy *head);
 
 void StartGame() {
-    const int screenWidth = 800;
-    const int screenHeight = 600;
+    const int screenWidth = 1600;
+    const int screenHeight = 900;
+
+    // Tamanho Fundo
+    int alternateBackgroundHeight = screenHeight * 0.65f;
+
+    // Inicializa nuvens
+    Cloud clouds[MAX_CLOUDS];
+    InitializeClouds(clouds, screenWidth, screenHeight);
     
     //audio
     InitAudioDevice();
     Music backgroundMusic = LoadMusicStream("audio/background.mp3");
-    Music pegarMoedaMusic = LoadMusicStream("audio/onda.mp3");
+    Sound pegarMoedaSound = LoadSound("audio/gelo.wav");
 
     PlayMusicStream(backgroundMusic);
     SetMusicVolume(backgroundMusic, 0.5f);
@@ -46,6 +64,9 @@ void StartGame() {
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
+
+        // Atualiza a posição das nuvens
+        UpdateClouds(clouds, screenWidth);
         
         //faz a musica atualizar a cada frame
         UpdateMusicStream(backgroundMusic);
@@ -75,13 +96,18 @@ void StartGame() {
 
         // Remove inimigos fora da tela e verifica colisões
         enemies = RemoveEnemies(enemies, screenWidth, &score);
-        if (CheckPlayerEnemyCollision(playerPos, playerRadius, &enemies, &score)) {
+        if (CheckPlayerEnemyCollision(playerPos, playerRadius, &enemies, &score, pegarMoedaSound)) {
             break;
         }
 
         // Renderização
         BeginDrawing();
         ClearBackground(SKYBLUE);
+
+        // nuvem    
+        DrawClouds(clouds);
+
+        DrawRectangle(0, screenHeight - alternateBackgroundHeight, screenWidth, alternateBackgroundHeight, DARKBLUE);
 
         // Renderiza o personagem
         float scale = 0.16f;
@@ -108,6 +134,36 @@ void StartGame() {
     int menuOption = ShowMenu();
     if (menuOption == 1) {
         StartGame();
+    }
+}
+
+void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight) {
+    for (int i = 0; i < MAX_CLOUDS; i++) {
+        clouds[i].position.x = GetRandomValue(0, screenWidth);
+        clouds[i].position.y = GetRandomValue(20, screenHeight * 0.35f); // Área no céu (acima da água)
+        clouds[i].speed = GetRandomValue(10, 30) / 10.0f; // Velocidade lenta para movimento suave
+        clouds[i].size = GetRandomValue(20, 60); // Tamanho aleatório das nuvens
+    }
+}
+
+void UpdateClouds(Cloud clouds[], int screenWidth) {
+    for (int i = 0; i < MAX_CLOUDS; i++) {
+        clouds[i].position.x -= clouds[i].speed;
+
+        // Quando a nuvem sair da tela, reposicione-a do lado direito
+        if (clouds[i].position.x < -clouds[i].size * 2) {
+            clouds[i].position.x = screenWidth + clouds[i].size * 2;
+            clouds[i].position.y = GetRandomValue(20, screenWidth * 0.35f);
+            clouds[i].speed = GetRandomValue(10, 30) / 10.0f;
+            clouds[i].size = GetRandomValue(20, 60);
+        }
+    }
+}
+
+void DrawClouds(Cloud clouds[]) {
+    for (int i = 0; i < MAX_CLOUDS; i++) {
+        // Cada nuvem será uma elipse branca
+        DrawEllipse(clouds[i].position.x, clouds[i].position.y, clouds[i].size * 2, clouds[i].size, WHITE);
     }
 }
 
@@ -161,7 +217,7 @@ void DrawEnemies(Enemy *head) {
 }
 
 // Verifica colisão entre o jogador e os inimigos, removendo os amarelos ao colidir
-int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score) {
+int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score, Sound coinSound) {
     Enemy *current = *enemies;
     Enemy *previous = NULL;
 
@@ -169,6 +225,7 @@ int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **ene
         if (CheckCollisionCircles(playerPos, playerRadius, current->position, current->radius)) {
             if (current->isSpecial) {
                 (*score)++; // Incrementa a pontuação ao tocar um obstáculo especial
+                PlaySound(coinSound);
 
                 // Remove o obstáculo especial da lista
                 if (previous == NULL) {
