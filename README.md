@@ -21,15 +21,25 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 
 ## 🪄 How to Use
 
-1. no terminal linux dentro do diretorio onde se encontra o jogo coloque.
+
+1. Primeiro você precisa instalar a biblioteca "raylib" na sua maquina linux, para isso entre no caminho do arquivo (raylib-5.0_linux_amd64)
+   ```
+   cd ~/SurfGameInC/raylib-5.0_linux_amd64
+   ```
+2. Dentro do arquivo raylib, coloque o seguinte comando no Terminal
+   ```
+   sudo cp -r ./* /usr/
+   ```
+   Agora seu "raylib" está pronto para ser usado
+3. no terminal linux dentro do diretorio onde se encontra o jogo coloque.
    ```
    gcc *.c -o surfgame -lraylib
    ```
-2. Após isso apenas rode o jogo.
+4. Após isso apenas rode o jogo.
    ```
    ./surfgame
    ```
-3. Many desktop publishing packages.
+
 
 ## 💞 Acknowledgments
 
