@@ -23,6 +23,14 @@ void FreeEnemies(Enemy *head);
 void StartGame() {
     const int screenWidth = 800;
     const int screenHeight = 600;
+    
+    //audio
+    InitAudioDevice();
+    Music backgroundMusic = LoadMusicStream("audio/background.mp3");
+    Music pegarMoedaMusic = LoadMusicStream("audio/onda.mp3");
+
+    PlayMusicStream(backgroundMusic);
+    SetMusicVolume(backgroundMusic, 0.5f);
 
     Vector2 playerPos = { 100, screenHeight / 2 };
     float playerRadius = 20;
@@ -38,6 +46,10 @@ void StartGame() {
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
+        
+        //faz a musica atualizar a cada frame
+        UpdateMusicStream(backgroundMusic);
+
         // Movimento do jogador
         if (IsKeyDown(KEY_W) && playerPos.y - playerRadius > 0) {
             playerPos.y -= 3.6;
@@ -72,7 +84,7 @@ void StartGame() {
         ClearBackground(SKYBLUE);
 
         // Renderiza o personagem
-        float scale = 0.18f;
+        float scale = 0.16f;
         DrawTextureEx(playerTexture, (Vector2){playerPos.x - playerTexture.width * scale / 2, playerPos.y - playerTexture.height * scale / 2}, 0.0f, scale, WHITE);
 
         // Desenha os inimigos
@@ -80,13 +92,17 @@ void StartGame() {
         DrawText(TextFormat("Score: %i", score), 10, 10, 20, DARKGRAY);
 
         EndDrawing();
+        
     }
 
-    // Libera a memória das texturas
+    // Libera a memória das texturas e audio
     UnloadTexture(playerTexture);
     UnloadTexture(enemyTexture);
     UnloadTexture(specialEnemyTexture); // Libere a textura especial
     FreeEnemies(enemies);
+
+    UnloadMusicStream(backgroundMusic);
+    CloseAudioDevice();
 
     // Inicia o menu
     int menuOption = ShowMenu();

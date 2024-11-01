@@ -4,7 +4,7 @@
 
 int main(void) {
     // Inicializa a tela
-    InitWindow(800, 600, "Game Menu");
+    InitWindow(800, 600, "Game Menu"); //1600 900
     
     //exibir o menu
     int menuOption = ShowMenu();
