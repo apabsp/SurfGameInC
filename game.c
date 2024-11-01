@@ -62,7 +62,7 @@ void StartGame() {
 
     //texturas
     Texture2D playerTexture = LoadTexture("imagens/picole.png");
-    Texture2D enemyTexture = LoadTexture("imagens/tubaraoobstaculo.png");
+    Texture2D enemyTexture = LoadTexture("imagens/tony?.png"); //tubaraoobstaculo.png
     Texture2D specialEnemyTexture = LoadTexture("imagens/gelo.png");
 
     SetTargetFPS(60);
