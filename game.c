@@ -18,7 +18,7 @@ typedef struct Cloud {
     float size;
 } Cloud;
 
-#define MAX_CLOUDS 4 // Defina o número máximo de nuvens
+#define MAX_CLOUDS 4 // máximo de nuvens
 void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight);
 void UpdateClouds(Cloud clouds[], int screenWidth);
 void DrawClouds(Cloud clouds[]);
@@ -45,13 +45,17 @@ void StartGame() {
     //audio
     InitAudioDevice();
     Music backgroundMusic = LoadMusicStream("audio/background.mp3");
+    Music seaBackground = LoadMusicStream("audio/somdomar.mp3");
     Sound pegarMoedaSound = LoadSound("audio/gelo.wav");
 
     PlayMusicStream(backgroundMusic);
     SetMusicVolume(backgroundMusic, 0.5f);
+    PlayMusicStream(seaBackground);
+    SetMusicVolume(seaBackground, 0.3f);
 
     Vector2 playerPos = { 100, screenHeight / 2 };
-    float playerRadius = 20;
+    float playerRadius = 20; //hitbox
+    float playerRotation = 0.0f; //angulo
     int score = 0;
     float enemySpeed = 200;
     Enemy *enemies = NULL;
@@ -70,13 +74,18 @@ void StartGame() {
         
         //faz a musica atualizar a cada frame
         UpdateMusicStream(backgroundMusic);
+        UpdateMusicStream(seaBackground);
 
         // Movimento do jogador
         if (IsKeyDown(KEY_W) && playerPos.y - playerRadius > 0) {
             playerPos.y -= 3.6;
+            playerRotation = -10.0f; //inclina pra cima
         }
-        if (IsKeyDown(KEY_S) && playerPos.y + playerRadius < screenHeight) {
+        else if (IsKeyDown(KEY_S) && playerPos.y + playerRadius < screenHeight) {
             playerPos.y += 3.6;
+            playerRotation = 10.0f; //inclina pra baixo
+        }else {
+            playerRotation = 0.0f; // Volta ao ângulo neutro
         }
         if (IsKeyDown(KEY_A) && playerPos.x - playerRadius > 0) {
             playerPos.x -= 3.6;
@@ -88,7 +97,16 @@ void StartGame() {
         // Adiciona novos inimigos
         if (GetRandomValue(0, 100) < 3) {
             bool isSpecial = GetRandomValue(0, 4) == 0;
-            enemies = AddEnemy(enemies, (Vector2){screenWidth + 20, GetRandomValue(20, screenHeight - 20)}, 20, isSpecial, enemyTexture, specialEnemyTexture);
+
+            float enemyYPosition;
+            if (isSpecial) {
+                // Inimigos especiais podem aparecer em qualquer lugar da tela
+                enemyYPosition = GetRandomValue(20, screenHeight - 20);
+            } else {
+                // Inimigos comuns (tubarões) só aparecem na área de água
+                enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20);
+            }
+            enemies = AddEnemy(enemies, (Vector2){screenWidth + 20, enemyYPosition}, 20, isSpecial, enemyTexture, specialEnemyTexture);
         }
 
         // Atualiza a posição dos inimigos
@@ -111,7 +129,7 @@ void StartGame() {
 
         // Renderiza o personagem
         float scale = 0.16f;
-        DrawTextureEx(playerTexture, (Vector2){playerPos.x - playerTexture.width * scale / 2, playerPos.y - playerTexture.height * scale / 2}, 0.0f, scale, WHITE);
+        DrawTextureEx(playerTexture, (Vector2){playerPos.x - playerTexture.width * scale / 2, playerPos.y - playerTexture.height * scale / 2}, playerRotation, scale, WHITE);
 
         // Desenha os inimigos
         DrawEnemies(enemies);
