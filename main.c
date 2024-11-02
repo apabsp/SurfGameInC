@@ -11,6 +11,8 @@ int main(void) {
     
     if (menuOption == 1) {  // Se a opção "Jogar" foi selecionada
         StartGame();
+    }else if (menuOption == 2){
+        ShowSettings();
     }
     // Fechar a janela
     CloseWindow();

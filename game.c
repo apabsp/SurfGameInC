@@ -68,13 +68,13 @@ void StartGame() {
     PlayMusicStream(seaBackground);
     SetMusicVolume(seaBackground, 0.3f);
 
-    Vector2 playerPos = { 500, screenHeight / 2 };
+    Vector2 playerPos = { 500, 600}; //cordenadas do jogador
     float playerRadius = 20; //hitbox
     float playerRotation = 0.0f; //angulo
     int score = 0;
     float enemySpeed = 200;
     Enemy *enemies = NULL;
-    VerticalObstacle verticalObstacle = {75, 0.5f, 70}; //local inicial (screenwidth), velocidade e recuo
+    VerticalObstacle verticalObstacle = {75, 0.5f, 70}; //local inicial (screenwidth), velocidade e recuo da onda
 
     //texturas
     Texture2D playerTexture = LoadTexture("imagens/picole.png");

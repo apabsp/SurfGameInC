@@ -12,6 +12,7 @@ typedef enum MenuOption {
 } MenuOption;
 
 MenuOption CheckButtonPressed(Rectangle button, Vector2 mousePoint);
+float ShowSettings(void); // Função para a tela de configurações
 
 // Função para exibir o menu
 int ShowMenu(void) {
@@ -19,8 +20,6 @@ int ShowMenu(void) {
     Rectangle playButton = {SCREEN_WIDTH / 2 - 100, 200, 200, 50};
     Rectangle settingsButton = {SCREEN_WIDTH / 2 - 100, 300, 200, 50};
     Rectangle quitButton = {SCREEN_WIDTH / 2 - 100, 400, 200, 50};
-
-    MenuOption selectedOption = MENU_NONE;
 
     SetTargetFPS(60);
 
@@ -32,9 +31,11 @@ int ShowMenu(void) {
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             if (CheckCollisionPointRec(mousePoint, playButton)) {
                 return 1;  // "Play" foi selecionado
+            } else if (CheckCollisionPointRec(mousePoint, settingsButton)) {
+                ShowSettings(); // Exibe a tela de configurações
             } else if (CheckCollisionPointRec(mousePoint, quitButton)) {
                 CloseWindow();
-                return 0;       // "Sair" foi selecionado
+                return 0;  // "Sair" foi selecionado
             }
         }
 
@@ -53,13 +54,6 @@ int ShowMenu(void) {
         DrawText("Sair", quitButton.x + 65, quitButton.y + 15, 20, BLACK);
 
         EndDrawing();
-
-        // Verifica a opção selecionada
-        if (selectedOption == MENU_PLAY) {
-            return 1;  // "Play" foi selecionado
-        } else if (selectedOption == MENU_QUIT) {
-            return 0;  // "Quit" foi selecionado
-        }
     }
 
     return 0;  // Por padrão, retorna 0
@@ -73,4 +67,47 @@ MenuOption CheckButtonPressed(Rectangle button, Vector2 mousePoint) {
         if (button.y == 400) return MENU_QUIT;
     }
     return MENU_NONE;
+}
+
+// Função para exibir a tela de configurações com uma barra de volume
+float ShowSettings(void) {
+    float musicVolume = 0.5f;  // Volume inicial da música
+    Rectangle volumeBar = {SCREEN_WIDTH / 2 - 150, 200, 300, 20};
+    Rectangle volumeSlider = {volumeBar.x + (volumeBar.width * musicVolume) - 10, volumeBar.y - 5, 20, 30};
+
+    while (!WindowShouldClose()) {
+        Vector2 mousePoint = GetMousePosition();
+
+        // Verifica se o slider está sendo arrastado
+        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(mousePoint, volumeSlider)) {
+            volumeSlider.x = mousePoint.x - volumeSlider.width / 2;
+
+            // Limita o slider à barra de volume
+            if (volumeSlider.x < volumeBar.x) volumeSlider.x = volumeBar.x;
+            if (volumeSlider.x > volumeBar.x + volumeBar.width - volumeSlider.width)
+                volumeSlider.x = volumeBar.x + volumeBar.width - volumeSlider.width;
+
+            // Calcula o volume com base na posição do slider
+            musicVolume = (volumeSlider.x - volumeBar.x) / volumeBar.width;
+        }
+
+        BeginDrawing();
+        ClearBackground(SKYBLUE);
+
+        // Desenha o texto das configurações
+        DrawText("Configurações", SCREEN_WIDTH / 2 - 100, 100, 30, WHITE);
+        DrawText(TextFormat("Volume da Música: %.2f", musicVolume), SCREEN_WIDTH / 2 - 150, 160, 20, WHITE);
+        DrawText("Pressione ESC para retornar ao menu", SCREEN_WIDTH / 2 - 150, 400, 20, WHITE);
+
+        // Desenha a barra de volume e o slider
+        DrawRectangleRec(volumeBar, LIGHTGRAY);
+        DrawRectangleRec(volumeSlider, DARKGRAY);
+
+        EndDrawing();
+
+        // Sai das configurações com ESC
+        if (IsKeyPressed(KEY_ESCAPE)) break;
+    }
+
+    return musicVolume;  // Retorna o volume ajustado
 }
