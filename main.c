@@ -4,7 +4,7 @@
 
 int main(void) {
     // Inicializa a tela
-    InitWindow(1600, 900, "Game Menu"); //1600 900
+    InitWindow(1600, 900, "Game Menu"); //horizontal/comprimento e vertical/altura
     
     //exibir o menu
     int menuOption = ShowMenu();

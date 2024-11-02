@@ -18,16 +18,29 @@ typedef struct Cloud {
     float size;
 } Cloud;
 
-#define MAX_CLOUDS 4 // máximo de nuvens
+// Estrutura e definição do obstáculo vertical
+typedef struct {
+    float xPosition; // Posição fixa no eixo X
+    float speed; //velocidadade onda
+    float recuoAmount; //recuo quando pegar ponto
+} VerticalObstacle;
+
+#define MAX_CLOUDS 5 // máximo de nuvens
 void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight);
 void UpdateClouds(Cloud clouds[], int screenWidth);
 void DrawClouds(Cloud clouds[]);
 
 void StartGame();
+
+bool CheckVerticalObstacleCollision(Vector2 playerPos, float playerRadius, VerticalObstacle obstacle);
+void UpdateVerticalObstacle(VerticalObstacle *obstacle);
+void RecuarObstacle(VerticalObstacle *obstacle);
+
+
 Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, Texture2D normalTexture, Texture2D specialTexture);
 void UpdateEnemies(Enemy *head, float speed);
 Enemy *RemoveEnemies(Enemy *head, int screenWidth, int *score);
-int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score,Sound coinSound);
+int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score,Sound coinSound, VerticalObstacle *verticalObstacle);
 void DrawEnemies(Enemy *head);
 void FreeEnemies(Enemy *head);
 
@@ -53,12 +66,13 @@ void StartGame() {
     PlayMusicStream(seaBackground);
     SetMusicVolume(seaBackground, 0.3f);
 
-    Vector2 playerPos = { 100, screenHeight / 2 };
+    Vector2 playerPos = { 500, screenHeight / 2 };
     float playerRadius = 20; //hitbox
     float playerRotation = 0.0f; //angulo
     int score = 0;
     float enemySpeed = 200;
     Enemy *enemies = NULL;
+    VerticalObstacle verticalObstacle = {75, 0.5f, 60}; //local inicial (screenwidth), velocidade e recuo
 
     //texturas
     Texture2D playerTexture = LoadTexture("imagens/picole.png");
@@ -93,6 +107,12 @@ void StartGame() {
         if (IsKeyDown(KEY_D) && playerPos.x + playerRadius < screenWidth) {
             playerPos.x += 3.6;
         }
+        if (CheckVerticalObstacleCollision(playerPos, playerRadius, verticalObstacle)) {
+            // Colisão detectada - termina o jogo ou realiza outra ação
+            break;
+        }
+
+        UpdateVerticalObstacle(&verticalObstacle);
 
         // Adiciona novos inimigos
         if (GetRandomValue(0, 100) < 3) {
@@ -114,7 +134,7 @@ void StartGame() {
 
         // Remove inimigos fora da tela e verifica colisões
         enemies = RemoveEnemies(enemies, screenWidth, &score);
-        if (CheckPlayerEnemyCollision(playerPos, playerRadius, &enemies, &score, pegarMoedaSound)) {
+        if (CheckPlayerEnemyCollision(playerPos, playerRadius, &enemies, &score, pegarMoedaSound, &verticalObstacle)) {
             break;
         }
 
@@ -125,7 +145,11 @@ void StartGame() {
         // nuvem    
         DrawClouds(clouds);
 
+        //mar
         DrawRectangle(0, screenHeight - alternateBackgroundHeight, screenWidth, alternateBackgroundHeight, DARKBLUE);
+
+        //onda
+        DrawRectangle(verticalObstacle.xPosition, 0, 5, screenHeight, RED);
 
         // Renderiza o personagem
         float scale = 0.16f;
@@ -152,6 +176,31 @@ void StartGame() {
     int menuOption = ShowMenu();
     if (menuOption == 1) {
         StartGame();
+    }
+}
+
+bool CheckVerticalObstacleCollision(Vector2 playerPos, float playerRadius, VerticalObstacle obstacle) {
+    // Se o jogador ultrapassar o limite do obstáculo no eixo X
+    return playerPos.x - playerRadius <= obstacle.xPosition;
+}
+
+// Função para atualizar a posição do obstáculo, movendo-o para a direita
+void UpdateVerticalObstacle(VerticalObstacle *obstacle) {
+    obstacle->xPosition += obstacle->speed; // Move para a direita
+
+    // Garante que o obstáculo não ultrapasse o limite direito da tela
+    if (obstacle->xPosition > 1600) { // Supondo que a largura da tela é 1600
+        obstacle->xPosition = 1600;
+    }
+}
+
+// Função para recuar o obstáculo quando o jogador marca ponto
+void RecuarObstacle(VerticalObstacle *obstacle) {
+    obstacle->xPosition -= obstacle->recuoAmount; // Recuo para a esquerda
+
+    // Garante que o obstáculo não passe da posição inicial (x = 100)
+    if (obstacle->xPosition < 100) {
+        obstacle->xPosition = 100;
     }
 }
 
@@ -235,7 +284,7 @@ void DrawEnemies(Enemy *head) {
 }
 
 // Verifica colisão entre o jogador e os inimigos, removendo os amarelos ao colidir
-int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score, Sound coinSound) {
+int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score, Sound coinSound, VerticalObstacle *verticalObstacle) {
     Enemy *current = *enemies;
     Enemy *previous = NULL;
 
@@ -244,6 +293,7 @@ int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **ene
             if (current->isSpecial) {
                 (*score)++; // Incrementa a pontuação ao tocar um obstáculo especial
                 PlaySound(coinSound);
+                RecuarObstacle(verticalObstacle);
 
                 // Remove o obstáculo especial da lista
                 if (previous == NULL) {
