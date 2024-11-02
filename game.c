@@ -150,15 +150,17 @@ void StartGame() {
         //mar
         DrawRectangle(0, screenHeight - alternateBackgroundHeight, screenWidth, alternateBackgroundHeight, DARKBLUE);
 
-        //onda
-        DrawTextureEx(waveTexture, (Vector2){verticalObstacle.xPosition - waveTexture.width / 2, 0}, 0.0f, (float)screenHeight / waveTexture.height, WHITE);
-
         // Renderiza o personagem
         float scale = 0.16f;
         DrawTextureEx(playerTexture, (Vector2){playerPos.x - playerTexture.width * scale / 2, playerPos.y - playerTexture.height * scale / 2}, playerRotation, scale, WHITE);
 
         // Desenha os inimigos
         DrawEnemies(enemies);
+
+        //onda
+        DrawTextureEx(waveTexture, (Vector2){verticalObstacle.xPosition - waveTexture.width / 2, 90}, 0.0f, (float)screenHeight / waveTexture.height, WHITE);
+
+        //score
         DrawText(TextFormat("Score: %i", score), 10, 10, 20, DARKGRAY);
 
         EndDrawing();
