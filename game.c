@@ -61,6 +61,8 @@ void StartGame() {
     Music seaBackground = LoadMusicStream("audio/somdomar.mp3");
     Sound pegarMoedaSound = LoadSound("audio/gelo.wav");
 
+    //volume
+    SetSoundVolume(pegarMoedaSound, 0.3);
     PlayMusicStream(backgroundMusic);
     SetMusicVolume(backgroundMusic, 0.5f);
     PlayMusicStream(seaBackground);
@@ -72,12 +74,13 @@ void StartGame() {
     int score = 0;
     float enemySpeed = 200;
     Enemy *enemies = NULL;
-    VerticalObstacle verticalObstacle = {75, 0.5f, 60}; //local inicial (screenwidth), velocidade e recuo
+    VerticalObstacle verticalObstacle = {75, 0.5f, 70}; //local inicial (screenwidth), velocidade e recuo
 
     //texturas
     Texture2D playerTexture = LoadTexture("imagens/picole.png");
     Texture2D enemyTexture = LoadTexture("imagens/tony?.png"); //tubaraoobstaculo.png
     Texture2D specialEnemyTexture = LoadTexture("imagens/gelo.png");
+    Texture2D waveTexture = LoadTexture("imagens/onda.png");
 
     SetTargetFPS(60);
 
@@ -108,7 +111,6 @@ void StartGame() {
             playerPos.x += 3.6;
         }
         if (CheckVerticalObstacleCollision(playerPos, playerRadius, verticalObstacle)) {
-            // Colisão detectada - termina o jogo ou realiza outra ação
             break;
         }
 
@@ -149,7 +151,7 @@ void StartGame() {
         DrawRectangle(0, screenHeight - alternateBackgroundHeight, screenWidth, alternateBackgroundHeight, DARKBLUE);
 
         //onda
-        DrawRectangle(verticalObstacle.xPosition, 0, 5, screenHeight, RED);
+        DrawTextureEx(waveTexture, (Vector2){verticalObstacle.xPosition - waveTexture.width / 2, 0}, 0.0f, (float)screenHeight / waveTexture.height, WHITE);
 
         // Renderiza o personagem
         float scale = 0.16f;
@@ -166,7 +168,8 @@ void StartGame() {
     // Libera a memória das texturas e audio
     UnloadTexture(playerTexture);
     UnloadTexture(enemyTexture);
-    UnloadTexture(specialEnemyTexture); // Libere a textura especial
+    UnloadTexture(specialEnemyTexture);
+    UnloadTexture(waveTexture);
     FreeEnemies(enemies);
 
     UnloadMusicStream(backgroundMusic);
@@ -180,7 +183,6 @@ void StartGame() {
 }
 
 bool CheckVerticalObstacleCollision(Vector2 playerPos, float playerRadius, VerticalObstacle obstacle) {
-    // Se o jogador ultrapassar o limite do obstáculo no eixo X
     return playerPos.x - playerRadius <= obstacle.xPosition;
 }
 
@@ -189,7 +191,7 @@ void UpdateVerticalObstacle(VerticalObstacle *obstacle) {
     obstacle->xPosition += obstacle->speed; // Move para a direita
 
     // Garante que o obstáculo não ultrapasse o limite direito da tela
-    if (obstacle->xPosition > 1600) { // Supondo que a largura da tela é 1600
+    if (obstacle->xPosition > 1600) {
         obstacle->xPosition = 1600;
     }
 }
@@ -198,7 +200,6 @@ void UpdateVerticalObstacle(VerticalObstacle *obstacle) {
 void RecuarObstacle(VerticalObstacle *obstacle) {
     obstacle->xPosition -= obstacle->recuoAmount; // Recuo para a esquerda
 
-    // Garante que o obstáculo não passe da posição inicial (x = 100)
     if (obstacle->xPosition < 100) {
         obstacle->xPosition = 100;
     }
@@ -217,7 +218,6 @@ void UpdateClouds(Cloud clouds[], int screenWidth) {
     for (int i = 0; i < MAX_CLOUDS; i++) {
         clouds[i].position.x -= clouds[i].speed;
 
-        // Quando a nuvem sair da tela, reposicione-a do lado direito
         if (clouds[i].position.x < -clouds[i].size * 2) {
             clouds[i].position.x = screenWidth + clouds[i].size * 2;
             clouds[i].position.y = GetRandomValue(20, screenWidth * 0.35f);
@@ -229,7 +229,6 @@ void UpdateClouds(Cloud clouds[], int screenWidth) {
 
 void DrawClouds(Cloud clouds[]) {
     for (int i = 0; i < MAX_CLOUDS; i++) {
-        // Cada nuvem será uma elipse branca
         DrawEllipse(clouds[i].position.x, clouds[i].position.y, clouds[i].size * 2, clouds[i].size, WHITE);
     }
 }
@@ -240,7 +239,7 @@ Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, Tex
     newEnemy->position = position;
     newEnemy->radius = radius;
     newEnemy->isSpecial = isSpecial;
-    newEnemy->texture = isSpecial ? specialTexture : normalTexture; // Define a textura baseada em isSpecial
+    newEnemy->texture = isSpecial ? specialTexture : normalTexture;
     newEnemy->next = head;
     return newEnemy;
 }
