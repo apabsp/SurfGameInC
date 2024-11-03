@@ -11,6 +11,8 @@ typedef enum MenuOption {
     MENU_QUIT
 } MenuOption;
 
+float globalVolume = 0.5f;
+
 MenuOption CheckButtonPressed(Rectangle button, Vector2 mousePoint);
 float ShowSettings(void); // Função para a tela de configurações
 
@@ -71,9 +73,8 @@ MenuOption CheckButtonPressed(Rectangle button, Vector2 mousePoint) {
 
 // Função para exibir a tela de configurações com uma barra de volume
 float ShowSettings(void) {
-    float musicVolume = 0.5f;  // Volume inicial da música
     Rectangle volumeBar = {SCREEN_WIDTH / 2 - 150, 200, 300, 20};
-    Rectangle volumeSlider = {volumeBar.x + (volumeBar.width * musicVolume) - 10, volumeBar.y - 5, 20, 30};
+    Rectangle volumeSlider = {volumeBar.x + (volumeBar.width * globalVolume) - 10, volumeBar.y - 5, 20, 30};
 
     while (!WindowShouldClose()) {
         Vector2 mousePoint = GetMousePosition();
@@ -88,7 +89,7 @@ float ShowSettings(void) {
                 volumeSlider.x = volumeBar.x + volumeBar.width - volumeSlider.width;
 
             // Calcula o volume com base na posição do slider
-            musicVolume = (volumeSlider.x - volumeBar.x) / volumeBar.width;
+            globalVolume = (volumeSlider.x - volumeBar.x) / volumeBar.width;
         }
 
         BeginDrawing();
@@ -96,7 +97,7 @@ float ShowSettings(void) {
 
         // Desenha o texto das configurações
         DrawText("Configurações", SCREEN_WIDTH / 2 - 100, 100, 30, WHITE);
-        DrawText(TextFormat("Volume da Música: %.2f", musicVolume), SCREEN_WIDTH / 2 - 150, 160, 20, WHITE);
+        DrawText(TextFormat("Volume da Música: %.2f", globalVolume), SCREEN_WIDTH / 2 - 150, 160, 20, WHITE);
         DrawText("Pressione ESC para retornar ao menu", SCREEN_WIDTH / 2 - 150, 400, 20, WHITE);
 
         // Desenha a barra de volume e o slider
@@ -109,5 +110,5 @@ float ShowSettings(void) {
         if (IsKeyPressed(KEY_ESCAPE)) break;
     }
 
-    return musicVolume;  // Retorna o volume ajustado
+    return globalVolume;  // Retorna o volume ajustado
 }

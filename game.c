@@ -25,6 +25,8 @@ typedef struct {
     float recuoAmount; //recuo quando pegar ponto
 } VerticalObstacle;
 
+extern float globalVolume; //puxa o volume da janela settings
+
 #define MAX_CLOUDS 5 // máximo de nuvens
 void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight);
 void UpdateClouds(Cloud clouds[], int screenWidth);
@@ -62,11 +64,11 @@ void StartGame() {
     Sound pegarMoedaSound = LoadSound("audio/gelo.wav");
 
     //volume
-    SetSoundVolume(pegarMoedaSound, 0.3);
+    SetSoundVolume(pegarMoedaSound, globalVolume);
     PlayMusicStream(backgroundMusic);
-    SetMusicVolume(backgroundMusic, 0.5f);
+    SetMusicVolume(backgroundMusic, globalVolume);
     PlayMusicStream(seaBackground);
-    SetMusicVolume(seaBackground, 0.3f);
+    SetMusicVolume(seaBackground, globalVolume);
 
     Vector2 playerPos = { 500, 600}; //cordenadas do jogador
     float playerRadius = 20; //hitbox
@@ -74,7 +76,7 @@ void StartGame() {
     int score = 0;
     float enemySpeed = 200;
     Enemy *enemies = NULL;
-    VerticalObstacle verticalObstacle = {75, 0.5f, 70}; //local inicial (screenwidth), velocidade e recuo da onda
+    VerticalObstacle verticalObstacle = {70, 0.35f, 70}; //local inicial (screenwidth), velocidade e recuo da onda
 
     //texturas
     Texture2D playerTexture = LoadTexture("imagens/picole.png");
