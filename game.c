@@ -25,7 +25,7 @@ typedef struct {
     float recuoAmount; //recuo quando pegar ponto
 } VerticalObstacle;
 
-extern float globalVolume; //puxa o volume da janela settings
+extern float globalVolume; //puxa a variavel do volume da janela settings
 
 #define MAX_CLOUDS 5 // máximo de nuvens
 void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight);
