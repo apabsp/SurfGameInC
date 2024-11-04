@@ -9,10 +9,12 @@ int main(void) {
     //exibir o menu
     int menuOption = ShowMenu();
     
-    if (menuOption == 1) {  // Se a opção "Jogar" foi selecionada
+    if (menuOption == 1) {  // jogar
         StartGame();
-    }else if (menuOption == 2){
+    }else if (menuOption == 2){ // configurações
         ShowSettings();
+    }else if (menuOption == 3){ // placar
+        ShowHighscore;
     }
     // Fechar a janela
     CloseWindow();

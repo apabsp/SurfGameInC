@@ -3,5 +3,7 @@
 
 int ShowMenu(void);
 float ShowSettings(void);
+void ShowHighscore(void);
+
 
 #endif

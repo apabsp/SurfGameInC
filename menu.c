@@ -11,28 +11,25 @@ typedef enum MenuOption {
     MENU_QUIT
 } MenuOption;
 
-float globalVolume = 0.5f;
-bool showPhoto = false;  // Variável para controlar se a foto deve ser exibida
-Texture2D easterEggImage;  // Texture para armazenar a imagem do easter egg
-bool resourcesLoaded = false; // Verificador para garantir que a imagem é carregada apenas uma vez
+float globalVolume = 0.5f; // variavel global volume
 
-// Função para carregar os recursos necessários
+
+bool showPhoto = false;
+Texture2D easterEggImage;
+bool resourcesLoaded = false;
 void LoadResources() {
     if (!resourcesLoaded) {
-        easterEggImage = LoadTexture("imagens/???.png");  // Carrega a imagem do easter egg
+        easterEggImage = LoadTexture("imagens/???.png");
         resourcesLoaded = true;
     }
 }
 
-// Função para liberar os recursos carregados
 void UnloadResources() {
     if (resourcesLoaded) {
-        UnloadTexture(easterEggImage);  // Libera a textura da imagem ao finalizar
+        UnloadTexture(easterEggImage);
         resourcesLoaded = false;
     }
 }
-
-float ShowSettings(void); // Função para a tela de configurações
 
 // Função para exibir o menu
 int ShowMenu(void) {
@@ -40,7 +37,8 @@ int ShowMenu(void) {
 
     Rectangle playButton = {SCREEN_WIDTH / 2 - 100, 200, 200, 50};
     Rectangle settingsButton = {SCREEN_WIDTH / 2 - 100, 300, 200, 50};
-    Rectangle quitButton = {SCREEN_WIDTH / 2 - 100, 400, 200, 50};
+    Rectangle highscoreButton = {SCREEN_WIDTH / 2 - 100, 400, 200, 50};
+    Rectangle quitButton = {SCREEN_WIDTH / 2 - 100, 500, 200, 50};
 
     SetTargetFPS(60);
 
@@ -52,6 +50,8 @@ int ShowMenu(void) {
                 return 1;
             } else if (CheckCollisionPointRec(mousePoint, settingsButton)) {
                 ShowSettings();
+            } else if (CheckCollisionPointRec(mousePoint, highscoreButton)) {
+                ShowHighscore();
             } else if (CheckCollisionPointRec(mousePoint, quitButton)) {
                 CloseWindow();
                 UnloadResources();  // Libera os recursos ao fechar o programa
@@ -64,10 +64,12 @@ int ShowMenu(void) {
 
         DrawRectangleRec(playButton, LIGHTGRAY);
         DrawRectangleRec(settingsButton, LIGHTGRAY);
+        DrawRectangleRec(highscoreButton, LIGHTGRAY);
         DrawRectangleRec(quitButton, LIGHTGRAY);
 
         DrawText("Jogar", playButton.x + 65, playButton.y + 15, 20, BLACK);
         DrawText("Configurações", settingsButton.x + 50, settingsButton.y + 15, 20, BLACK);
+        DrawText("Highscore", highscoreButton.x + 55, highscoreButton.y + 15, 20, BLACK);
         DrawText("Sair", quitButton.x + 65, quitButton.y + 15, 20, BLACK);
 
         EndDrawing();
@@ -127,4 +129,24 @@ float ShowSettings(void) {
     }
 
     return globalVolume;
+}
+
+// Função para exibir a tela de highscore
+void ShowHighscore(void) {
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(SKYBLUE);
+
+        DrawText("Highscore", SCREEN_WIDTH / 2 - 80, 100, 30, WHITE);
+        DrawText("Top Scores:", SCREEN_WIDTH / 2 - 100, 200, 20, WHITE);
+        DrawText("1. 12345", SCREEN_WIDTH / 2 - 50, 250, 20, WHITE);  // Placeholder scores
+        DrawText("2. 6789", SCREEN_WIDTH / 2 - 50, 300, 20, WHITE);
+        DrawText("3. 3456", SCREEN_WIDTH / 2 - 50, 350, 20, WHITE);
+        
+        DrawText("Pressione ESC para retornar ao menu", SCREEN_WIDTH / 2 - 150, 400, 20, WHITE);
+
+        if (IsKeyPressed(KEY_ESCAPE)) break;
+
+        EndDrawing();
+    }
 }

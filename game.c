@@ -130,7 +130,7 @@ void StartGame() {
                 // Inimigos comuns (tubarões) só aparecem na área de água
                 enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20);
             }
-            enemies = AddEnemy(enemies, (Vector2){screenWidth + 20, enemyYPosition}, 20, isSpecial, enemyTexture, specialEnemyTexture);
+            enemies = AddEnemy(enemies, (Vector2){screenWidth + 20, enemyYPosition}, 25, isSpecial, enemyTexture, specialEnemyTexture);
         }
 
         // Atualiza a posição dos inimigos
