@@ -3,6 +3,11 @@
 #include <math.h>
 #include "game.h"
 #include "menu.h"
+#include <stdio.h>
+
+#define MAX_PLAYERS 100
+#define MAX_NAME_LENGTH 20
+#define TOP_PLAYERS 5
 
 typedef struct Enemy {
     Vector2 position;
@@ -45,6 +50,9 @@ Enemy *RemoveEnemies(Enemy *head, int screenWidth, int *score);
 int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score,Sound coinSound, VerticalObstacle *verticalObstacle);
 void DrawEnemies(Enemy *head);
 void FreeEnemies(Enemy *head);
+
+void SaveScore(const char *playerName, int score);
+void GetPlayerName(char *playerName);
 
 void StartGame() {
     const int screenWidth = 1600;
@@ -168,6 +176,13 @@ void StartGame() {
         EndDrawing();
         
     }
+
+    // Captura o nome do jogador após o fim do jogo
+    char playerName[MAX_NAME_LENGTH];
+    GetPlayerName(playerName);
+
+    // Salva a pontuação com o nome capturado
+    SaveScore(playerName, score);
 
     // Libera a memória das texturas e audio
     UnloadTexture(playerTexture);
@@ -316,6 +331,57 @@ int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **ene
     }
     return 0;
 }
+
+void SaveScore(const char *playerName, int score) {
+    FILE *file = fopen("placar.txt", "a");
+    if (file != NULL) {
+        fprintf(file, "%s %d\n", playerName, score);
+        fclose(file);
+    } else {
+        printf("Erro ao salvar o placar.\n");
+    }
+}
+
+void GetPlayerName(char *playerName) {
+    int letterCount = 0;
+    playerName[0] = '\0'; // Inicializa a string vazia
+
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+        ClearBackground(SKYBLUE);
+
+        DrawText("Digite seu nome:", 600, 300, 30, BLACK);
+        DrawText(playerName, 600, 350, 30, DARKGRAY);
+
+        // Captura os caracteres digitados
+        int key = GetCharPressed();
+        while (key > 0) {
+            // Adiciona o caractere se houver espaço
+            if ((key >= 32) && (key <= 125) && (letterCount < MAX_NAME_LENGTH - 1)) {
+                playerName[letterCount] = (char)key;
+                letterCount++;
+                playerName[letterCount] = '\0'; // Atualiza o terminador da string
+            }
+            key = GetCharPressed();  // Verifica o próximo caractere
+        }
+
+        // Apaga o último caractere se o Backspace for pressionado
+        if (IsKeyPressed(KEY_BACKSPACE)) {
+            if (letterCount > 0) {
+                letterCount--;
+                playerName[letterCount] = '\0';
+            }
+        }
+
+        // Confirma o nome com Enter
+        if (IsKeyPressed(KEY_ENTER) && letterCount > 0) {
+            break;  // Sai do loop e finaliza a captura de nome
+        }
+
+        EndDrawing();
+    }
+}
+
 
 // Libera a memória dos inimigos
 void FreeEnemies(Enemy *head) {

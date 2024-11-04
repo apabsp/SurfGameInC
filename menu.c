@@ -1,8 +1,13 @@
 #include "raylib.h"
 #include "menu.h"
+#include <stdio.h>
+#include <string.h>
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
+#define MAX_PLAYERS 100
+#define MAX_NAME_LENGTH 20
+#define TOP_PLAYERS 5
 
 typedef enum MenuOption {
     MENU_NONE = 0,
@@ -10,6 +15,11 @@ typedef enum MenuOption {
     MENU_SETTINGS,
     MENU_QUIT
 } MenuOption;
+
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    int score;
+} PlayerScore;
 
 float globalVolume = 0.5f; // variavel global volume
 
@@ -131,22 +141,66 @@ float ShowSettings(void) {
     return globalVolume;
 }
 
-// Função para exibir a tela de highscore
+void LoadAndSortScores(PlayerScore topScores[]) {
+    PlayerScore scores[MAX_PLAYERS];
+    int count = 0;
+
+    // Inicializa o topScores com nomes vazios e pontuação zero
+    for (int i = 0; i < TOP_PLAYERS; i++) {
+        strcpy(topScores[i].name, "");
+        topScores[i].score = 0;
+    }
+
+    // Ler o arquivo
+    FILE *file = fopen("placar.txt", "r");
+    if (file != NULL) {
+        while (fscanf(file, "%s %d", scores[count].name, &scores[count].score) != EOF && count < MAX_PLAYERS) {
+            count++;
+        }
+        fclose(file);
+    } else {
+        printf("Erro ao abrir o arquivo de placar.\n");
+    }
+
+    // Ordenar usando Insertion Sort
+    for (int i = 1; i < count; i++) {
+        PlayerScore key = scores[i];
+        int j = i - 1;
+        while (j >= 0 && scores[j].score < key.score) {
+            scores[j + 1] = scores[j];
+            j = j - 1;
+        }
+        scores[j + 1] = key;
+    }
+
+    // Selecionar os top 5
+    for (int i = 0; i < TOP_PLAYERS && i < count; i++) {
+        topScores[i] = scores[i];
+    }
+}
+
+
 void ShowHighscore(void) {
+    PlayerScore topScores[TOP_PLAYERS];
+    LoadAndSortScores(topScores);
+
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(SKYBLUE);
 
         DrawText("Highscore", SCREEN_WIDTH / 2 - 80, 100, 30, WHITE);
-        DrawText("Top Scores:", SCREEN_WIDTH / 2 - 100, 200, 20, WHITE);
-        DrawText("1. 12345", SCREEN_WIDTH / 2 - 50, 250, 20, WHITE);  // Placeholder scores
-        DrawText("2. 6789", SCREEN_WIDTH / 2 - 50, 300, 20, WHITE);
-        DrawText("3. 3456", SCREEN_WIDTH / 2 - 50, 350, 20, WHITE);
-        
-        DrawText("Pressione ESC para retornar ao menu", SCREEN_WIDTH / 2 - 150, 400, 20, WHITE);
 
+        for (int i = 0; i < TOP_PLAYERS; i++) {
+            if (strlen(topScores[i].name) > 0) {
+                DrawText(TextFormat("%d. %s - %d", i + 1, topScores[i].name, topScores[i].score),
+                         SCREEN_WIDTH / 2 - 100, 200 + i * 50, 20, WHITE);
+            }
+        }
+
+        DrawText("Pressione ESC para retornar ao menu", SCREEN_WIDTH / 2 - 150, 500, 20, WHITE);
         if (IsKeyPressed(KEY_ESCAPE)) break;
 
         EndDrawing();
     }
 }
+
