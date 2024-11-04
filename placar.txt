@@ -1,6 +1,0 @@
-amanda 1
-amanda 2
-amanda 3
-amanda 4
-amanda 5 10
-davi 27
