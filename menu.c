@@ -46,10 +46,9 @@ void UnloadResources() {
 // Função para exibir o menu
 int ShowMenu(void) {
     LoadResources();  // Carrega recursos ao exibir o menu
+    Font fonte = LoadFont("Fontes/coiso-Fredoka-one/coiso-FredokaOne-Regular.ttf");    
 
-    
-
-    Rectangle playButton = {200, 750, 200, 50};
+    Rectangle playButton = {250, 600, 300, 75}; // Alinhado centralmente abaixo do título
     Rectangle settingsButton = {600, 750, 200, 50};
     Rectangle highscoreButton = {1000, 750, 200, 50};
     Rectangle quitButton = {1400, 750, 200, 50};
@@ -77,15 +76,23 @@ int ShowMenu(void) {
         BeginDrawing();
         DrawTexture(mainMenuImage, 0, 0, WHITE);
 
-        DrawRectangleRec(playButton, LIGHTGRAY);
-        DrawRectangleRec(settingsButton, LIGHTGRAY);
-        DrawRectangleRec(highscoreButton, LIGHTGRAY);
-        DrawRectangleRec(quitButton, LIGHTGRAY);
+        DrawRectangleRec(playButton, WHITE);
+        DrawRectangleRec(settingsButton, WHITE);
+        DrawRectangleRec(highscoreButton, WHITE);
+        DrawRectangleRec(quitButton, WHITE);
 
-        DrawText("Jogar", playButton.x + 55, playButton.y + 15, 20, BLACK);
-        DrawText("Configurações", settingsButton.x + 50, settingsButton.y + 15, 20, BLACK);
-        DrawText("Highscore", highscoreButton.x + 55, highscoreButton.y + 15, 20, BLACK);
-        DrawText("Sair", quitButton.x + 55, quitButton.y + 15, 20, BLACK);
+        Vector2 playTextPosition = {playButton.x + 55, playButton.y + 15};
+        DrawTextEx(fonte, "Jogar", playTextPosition, 32, 1, BLACK);
+
+        Vector2 settingsTextPosition = {settingsButton.x + 50, settingsButton.y + 15};
+        DrawTextEx(fonte, "Configurações", settingsTextPosition, 32, 1, BLACK);
+
+        Vector2 highscoreTextPosition = {highscoreButton.x + 55, highscoreButton.y + 15};
+        DrawTextEx(fonte, "Highscore", highscoreTextPosition, 32, 1, BLACK);
+
+        Vector2 quitTextPosition = {quitButton.x + 55, quitButton.y + 15};
+        DrawTextEx(fonte, "Sair", quitTextPosition, 32, 1, BLACK);
+
 
         EndDrawing();
     }
