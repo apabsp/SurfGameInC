@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define SCREEN_WIDTH 1600
-#define SCREEN_HEIGHT 900
 #define MAX_PLAYERS 100
 #define MAX_NAME_LENGTH 20
 #define TOP_PLAYERS 5
@@ -28,10 +26,11 @@ bool showPhoto = false;
 Texture2D easterEggImage;
 Texture2D mainMenuImage;
 bool resourcesLoaded = false;
+
 void LoadResources() {
     if (!resourcesLoaded) {
         easterEggImage = LoadTexture("imagens/???.png");
-        mainMenuImage = LoadTexture("imagens/menu3.png");
+        mainMenuImage = LoadTexture("imagens/menu3_1.png");
         resourcesLoaded = true;
     }
 }
@@ -45,13 +44,15 @@ void UnloadResources() {
 
 // Função para exibir o menu
 int ShowMenu(void) {
+    
     LoadResources();  // Carrega recursos ao exibir o menu
+    
     Font fonte = LoadFont("Fontes/coiso-Fredoka-one/coiso-FredokaOne-Regular.ttf");    
 
-    Rectangle playButton = {250, 600, 300, 75}; // Alinhado centralmente abaixo do título
-    Rectangle settingsButton = {600, 750, 200, 50};
-    Rectangle highscoreButton = {1000, 750, 200, 50};
-    Rectangle quitButton = {1400, 750, 200, 50};
+    Rectangle playButton = {150, 600, 300, 75}; // Alinhado centralmente abaixo do título
+    Rectangle settingsButton = {150, 700, 300, 75};
+    Rectangle highscoreButton = {500, 600, 300, 75};
+    Rectangle quitButton = {500, 700, 300, 75};
 
     SetTargetFPS(60);
     
@@ -75,23 +76,32 @@ int ShowMenu(void) {
 
         BeginDrawing();
         DrawTexture(mainMenuImage, 0, 0, WHITE);
+        
+        Color azulBotao = {158, 196, 255, 255};    // Cor #048CFF com opacidade total
+        Color vermelhoBotao = { 242, 138, 122, 255 }; // Cor #F28A7A com opacidade total
 
-        DrawRectangleRec(playButton, WHITE);
-        DrawRectangleRec(settingsButton, WHITE);
-        DrawRectangleRec(highscoreButton, WHITE);
-        DrawRectangleRec(quitButton, WHITE);
+        float roundness = 0.5f; // Grau de arredondamento
+        int segments = 10;      // Suavidade do arredondamento
 
-        Vector2 playTextPosition = {playButton.x + 55, playButton.y + 15};
-        DrawTextEx(fonte, "Jogar", playTextPosition, 32, 1, BLACK);
+        // Desenha os botões com bordas arredondadas
+        DrawRectangleRounded(playButton, roundness, segments, azulBotao);
+        DrawRectangleRounded(settingsButton, roundness, segments, azulBotao);
+        DrawRectangleRounded(highscoreButton, roundness, segments, azulBotao);
+        DrawRectangleRounded(quitButton, roundness, segments, vermelhoBotao);
 
-        Vector2 settingsTextPosition = {settingsButton.x + 50, settingsButton.y + 15};
-        DrawTextEx(fonte, "Configurações", settingsTextPosition, 32, 1, BLACK);
 
-        Vector2 highscoreTextPosition = {highscoreButton.x + 55, highscoreButton.y + 15};
-        DrawTextEx(fonte, "Highscore", highscoreTextPosition, 32, 1, BLACK);
 
-        Vector2 quitTextPosition = {quitButton.x + 55, quitButton.y + 15};
-        DrawTextEx(fonte, "Sair", quitTextPosition, 32, 1, BLACK);
+        Vector2 playTextPosition = {playButton.x + 80, playButton.y + 15};
+        DrawTextEx(fonte, "JOGAR", playTextPosition, 46, 1, WHITE);
+
+        Vector2 settingsTextPosition = {settingsButton.x + 60, settingsButton.y + 15};
+        DrawTextEx(fonte, "AJUSTES", settingsTextPosition, 46, 1, WHITE);
+
+        Vector2 highscoreTextPosition = {highscoreButton.x + 45, highscoreButton.y + 15};
+        DrawTextEx(fonte, "HIGHSCORE", highscoreTextPosition, 46, 1, WHITE);
+
+        Vector2 quitTextPosition = {quitButton.x + 105, quitButton.y + 15};
+        DrawTextEx(fonte, "SAIR", quitTextPosition, 46, 1, WHITE);
 
 
         EndDrawing();
@@ -105,9 +115,9 @@ int ShowMenu(void) {
 float ShowSettings(void) {
     LoadResources();  // Carrega recursos ao entrar nas configurações, se ainda não carregados
 
-    Rectangle volumeBar = {SCREEN_WIDTH / 2 - 150, 200, 300, 20};
+    Rectangle volumeBar = {GetScreenWidth() / 2 - 150, 200, 300, 20};
     Rectangle volumeSlider = {volumeBar.x + (volumeBar.width * globalVolume) - 10, volumeBar.y - 5, 20, 30};
-    Rectangle easterEggTrigger = {10, SCREEN_HEIGHT - 30, 10, 10}; // Pequeno quadrado no canto inferior esquerdo
+    Rectangle easterEggTrigger = {10, GetScreenHeight() - 30, 10, 10}; // Pequeno quadrado no canto inferior esquerdo
 
     while (!WindowShouldClose()) {
         Vector2 mousePoint = GetMousePosition();
@@ -127,9 +137,9 @@ float ShowSettings(void) {
         BeginDrawing();
         ClearBackground(SKYBLUE);
 
-        DrawText("Configurações", SCREEN_WIDTH / 2 - 100, 100, 30, WHITE);
-        DrawText(TextFormat("Volume da Música: %.2f", globalVolume), SCREEN_WIDTH / 2 - 150, 160, 20, WHITE);
-        DrawText("Pressione ESC para retornar ao menu", SCREEN_WIDTH / 2 - 150, 400, 20, WHITE);
+        DrawText("Configurações", GetScreenWidth() / 2 - 100, 100, 30, WHITE);
+        DrawText(TextFormat("Volume da Música: %.2f", globalVolume), GetScreenWidth() / 2 - 150, 160, 20, WHITE);
+        DrawText("Pressione ESC para retornar ao menu", GetScreenWidth() / 2 - 150, 400, 20, WHITE);
 
         DrawRectangleRec(volumeBar, LIGHTGRAY);
         DrawRectangleRec(volumeSlider, DARKGRAY);
@@ -139,8 +149,8 @@ float ShowSettings(void) {
 
         // Exibe a foto se o easter egg foi ativado
         if (showPhoto) {
-            DrawTexture(easterEggImage, SCREEN_WIDTH / 2 - easterEggImage.width / 2, SCREEN_HEIGHT / 2 - easterEggImage.height / 2, WHITE);
-            DrawText("Pressione ESC para fechar a imagem", SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 + easterEggImage.height / 2 + 10, 20, WHITE);
+            DrawTexture(easterEggImage, GetScreenWidth() / 2 - easterEggImage.width / 2, GetScreenHeight() / 2 - easterEggImage.height / 2, WHITE);
+            DrawText("Pressione ESC para fechar a imagem", GetScreenWidth() / 2 - 150, GetScreenHeight() / 2 + easterEggImage.height / 2 + 10, 20, WHITE);
             if (IsKeyPressed(KEY_ESCAPE) || IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                 showPhoto = false;  // Fecha a foto ao pressionar ESC ou clicar novamente
             }
@@ -201,16 +211,16 @@ void ShowHighscore(void) {
         BeginDrawing();
         ClearBackground(SKYBLUE);
 
-        DrawText("Highscore", SCREEN_WIDTH / 2 - 80, 100, 30, WHITE);
+        DrawText("Highscore", GetScreenWidth() / 2 - 80, 100, 30, WHITE);
 
         for (int i = 0; i < TOP_PLAYERS; i++) {
             if (strlen(topScores[i].name) > 0) {
                 DrawText(TextFormat("%d. %s - %d", i + 1, topScores[i].name, topScores[i].score),
-                         SCREEN_WIDTH / 2 - 100, 200 + i * 50, 20, WHITE);
+                         GetScreenWidth() / 2 - 100, 200 + i * 50, 20, WHITE);
             }
         }
 
-        DrawText("Pressione ESC para retornar ao menu", SCREEN_WIDTH / 2 - 150, 500, 20, WHITE);
+        DrawText("Pressione ESC para retornar ao menu", GetScreenWidth() / 2 - 150, 500, 20, WHITE);
         if (IsKeyPressed(KEY_ESCAPE)) break;
 
         EndDrawing();
