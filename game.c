@@ -4,6 +4,7 @@
 #include "game.h"
 #include "menu.h"
 #include <stdio.h>
+#include <string.h>
 
 #define MAX_PLAYERS 100
 #define MAX_NAME_LENGTH 20
@@ -182,7 +183,11 @@ void StartGame() {
     GetPlayerName(playerName);
 
     // Salva a pontuação com o nome capturado
+    if(strcmp(playerName, "") == 0){
+        
+    }else{
     SaveScore(playerName, score);
+    }
 
     // Libera a memória das texturas e audio
     UnloadTexture(playerTexture);
@@ -373,6 +378,7 @@ void GetPlayerName(char *playerName) {
             }
         }
 
+ 
         // Confirma o nome com Enter
         if (IsKeyPressed(KEY_ENTER) && letterCount > 0) {
             break;  // Sai do loop e finaliza a captura de nome
