@@ -88,7 +88,7 @@ void StartGame() {
 
     //texturas
     Texture2D playerTexture = LoadTexture("imagens/picole.png");
-    Texture2D enemyTexture = LoadTexture("imagens/tony?.png"); //tubaraoobstaculo.png
+    Texture2D enemyTexture = LoadTexture("imagens/tub.png"); //tubaraoobstaculo.png
     Texture2D specialEnemyTexture = LoadTexture("imagens/gelo.png");
     Texture2D waveTexture = LoadTexture("imagens/onda.png");
 
