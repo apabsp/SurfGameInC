@@ -26,10 +26,12 @@ float globalVolume = 0.5f; // variavel global volume
 
 bool showPhoto = false;
 Texture2D easterEggImage;
+Texture2D mainMenuImage;
 bool resourcesLoaded = false;
 void LoadResources() {
     if (!resourcesLoaded) {
         easterEggImage = LoadTexture("imagens/???.png");
+        mainMenuImage = LoadTexture("imagens/menu3.png");
         resourcesLoaded = true;
     }
 }
@@ -45,12 +47,15 @@ void UnloadResources() {
 int ShowMenu(void) {
     LoadResources();  // Carrega recursos ao exibir o menu
 
-    Rectangle playButton = {SCREEN_WIDTH / 2 - 100, 200, 200, 50};
-    Rectangle settingsButton = {SCREEN_WIDTH / 2 - 100, 300, 200, 50};
-    Rectangle highscoreButton = {SCREEN_WIDTH / 2 - 100, 400, 200, 50};
-    Rectangle quitButton = {SCREEN_WIDTH / 2 - 100, 500, 200, 50};
+    
+
+    Rectangle playButton = {200, 750, 200, 50};
+    Rectangle settingsButton = {600, 750, 200, 50};
+    Rectangle highscoreButton = {1000, 750, 200, 50};
+    Rectangle quitButton = {1400, 750, 200, 50};
 
     SetTargetFPS(60);
+    
 
     while (!WindowShouldClose()) {
         Vector2 mousePoint = GetMousePosition();
@@ -70,20 +75,21 @@ int ShowMenu(void) {
         }
 
         BeginDrawing();
-        ClearBackground(SKYBLUE);
+        DrawTexture(mainMenuImage, 0, 0, WHITE);
 
         DrawRectangleRec(playButton, LIGHTGRAY);
         DrawRectangleRec(settingsButton, LIGHTGRAY);
         DrawRectangleRec(highscoreButton, LIGHTGRAY);
         DrawRectangleRec(quitButton, LIGHTGRAY);
 
-        DrawText("Jogar", playButton.x + 65, playButton.y + 15, 20, BLACK);
+        DrawText("Jogar", playButton.x + 55, playButton.y + 15, 20, BLACK);
         DrawText("Configurações", settingsButton.x + 50, settingsButton.y + 15, 20, BLACK);
         DrawText("Highscore", highscoreButton.x + 55, highscoreButton.y + 15, 20, BLACK);
-        DrawText("Sair", quitButton.x + 65, quitButton.y + 15, 20, BLACK);
+        DrawText("Sair", quitButton.x + 55, quitButton.y + 15, 20, BLACK);
 
         EndDrawing();
     }
+    UnloadTexture(mainMenuImage);
 
     return 0;
 }
@@ -203,4 +209,3 @@ void ShowHighscore(void) {
         EndDrawing();
     }
 }
-

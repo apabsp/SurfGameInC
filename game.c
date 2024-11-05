@@ -5,6 +5,7 @@
 #include "menu.h"
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #define MAX_PLAYERS 100
 #define MAX_NAME_LENGTH 20
@@ -54,6 +55,8 @@ void FreeEnemies(Enemy *head);
 
 void SaveScore(const char *playerName, int score);
 void GetPlayerName(char *playerName);
+
+void trim(char* str);
 
 void StartGame() {
     const int screenWidth = 1600;
@@ -182,12 +185,25 @@ void StartGame() {
     char playerName[MAX_NAME_LENGTH];
     GetPlayerName(playerName);
 
+        // Trim the playerName before checking
+    trim(playerName);
+
+    if (strcmp(playerName, "") == 0) {
+        // playerName is empty or just whitespace
+    } else {
+        SaveScore(playerName, score);
+    }
+
+
+
     // Salva a pontuação com o nome capturado
     if(strcmp(playerName, "") == 0){
         
     }else{
     SaveScore(playerName, score);
     }
+
+    strcpy(playerName, "");
 
     // Libera a memória das texturas e audio
     UnloadTexture(playerTexture);
@@ -396,4 +412,22 @@ void FreeEnemies(Enemy *head) {
         head = head->next;
         free(temp);
     }
+}
+
+void trim(char* str) {
+    // Trim leading whitespace
+    char* start = str;
+    while (isspace((unsigned char)*start)) start++;
+    
+    // Move trimmed string to the beginning
+    if (start != str) {
+        memmove(str, start, strlen(start) + 1);
+    }
+    
+    // Trim trailing whitespace
+    char* end = str + strlen(str) - 1;
+    while (end > str && isspace((unsigned char)*end)) end--;
+    
+    // Null-terminate the trimmed string
+    *(end + 1) = '\0';
 }
