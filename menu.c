@@ -23,7 +23,6 @@ typedef struct {
 
 float globalVolume = 0.5f; // variavel global volume
 
-
 bool showPhoto = false;
 Texture2D easterEggImage;
 Texture2D mainMenuImage;
@@ -80,7 +79,7 @@ int ShowMenu(void) {
         DrawTexture(mainMenuImage, 0, 0, WHITE);
         
         Color azulBotao = {158, 196, 255, 255};    // Cor #048CFF com opacidade total
-        Color vermelhoBotao = { 242, 138, 122, 255 }; // Cor #F28A7A com opacidade total
+        Color vermelhoBotao = { 242, 138, 122, 255}; // Cor #F28A7A com opacidade total
 
         float roundness = 0.5f; // Grau de arredondamento
         int segments = 10;      // Suavidade do arredondamento
@@ -236,6 +235,7 @@ void ShowHighscore(void) {
         
         Vector2 escTextPosition = {SCREEN_WIDTH / 2 - 150, 500};
         DrawTextEx(fonte, "Pressione ESC para retornar ao menu",escTextPosition, 20, 1, WHITE);
+        
         if (IsKeyPressed(KEY_ESCAPE)) break;
 
         EndDrawing();

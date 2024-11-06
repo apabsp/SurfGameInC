@@ -7,56 +7,102 @@
 #include <string.h>
 #include <ctype.h>
 
+// Definições e constantes
 #define MAX_PLAYERS 100
 #define MAX_NAME_LENGTH 20
 #define TOP_PLAYERS 5
+#define MAX_CLOUDS 5 // Máximo de nuvens
 
+extern float globalVolume; // Puxa a variável do volume da janela settings
+
+// Estruturas de Dados
+
+// Estrutura para representar um inimigo (obstáculo)
 typedef struct Enemy {
-    Vector2 position;
-    float radius;
-    bool isSpecial; // moedas
-    Texture2D texture; //textura do objeto criado
-    struct Enemy *next;
+    Vector2 position;    // Posição do inimigo
+    float radius;        // Raio do inimigo
+    bool isSpecial;      // Indica se o inimigo é especial (moedas)
+    Texture2D texture;   // Textura do inimigo
+    struct Enemy *next;  // Ponteiro para o próximo inimigo na lista
 } Enemy;
 
+// Estrutura para representar uma nuvem
 typedef struct Cloud {
-    Vector2 position;
-    float speed;
-    float size;
+    Vector2 position;    // Posição da nuvem
+    float speed;         // Velocidade de movimento da nuvem
+    float size;          // Tamanho da nuvem
 } Cloud;
 
-// Estrutura e definição do obstáculo vertical
+// Estrutura para representar o obstáculo vertical (onda)
 typedef struct {
-    float xPosition; // Posição fixa no eixo X
-    float speed; //velocidadade onda
-    float recuoAmount; //recuo quando pegar ponto
+    float xPosition;     // Posição fixa no eixo X
+    float speed;         // Velocidade de movimento da onda
+    float recuoAmount;   // Quantidade de recuo quando um ponto é coletado
 } VerticalObstacle;
 
-extern float globalVolume; //puxa a variavel do volume da janela settings
+typedef struct BackgroundSegment{
 
-#define MAX_CLOUDS 5 // máximo de nuvens
+    Vector2 position;     // Posição do segmento
+    Texture2D image;
+    struct BackgroundSegment *next;
+    struct BackgroundSegment *prev;
+
+} BackgroundSegment;
+
+
+
+// Funções para o Jogo Principal
+void StartGame();
+
+//Funções para o background
+BackgroundSegment *AddBackgroundSegment(BackgroundSegment **head, Vector2 position, float height, Texture2D image){
+    BackgroundSegment *aux = *head;
+    BackgroundSegment *newNode = (BackgroundSegment *)malloc(sizeof(BackgroundSegment)); 
+    newNode->image = image;
+    
+    if (*head == NULL){
+        // is head
+         // SUPER SAIYANM
+        newNode->next = newNode;
+        *head = newNode;
+        return;
+    }
+
+    while(aux->next != *head){
+        aux = aux->next;
+
+    }
+    aux->next = newNode;
+    newNode->next = *head;
+
+    return *head;
+}
+
+// Funções para Nuvens
 void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight);
 void UpdateClouds(Cloud clouds[], int screenWidth);
 void DrawClouds(Cloud clouds[]);
 
-void StartGame();
-
+// Funções para Obstáculo Vertical (Onda)
 bool CheckVerticalObstacleCollision(Vector2 playerPos, float playerRadius, VerticalObstacle obstacle);
 void UpdateVerticalObstacle(VerticalObstacle *obstacle);
 void RecuarObstacle(VerticalObstacle *obstacle);
 
-
+// Funções para Inimigos
 Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, Texture2D normalTexture, Texture2D specialTexture);
 void UpdateEnemies(Enemy *head, float speed);
 Enemy *RemoveEnemies(Enemy *head, int screenWidth, int *score);
-int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score,Sound coinSound, VerticalObstacle *verticalObstacle);
+int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score, Sound coinSound, VerticalObstacle *verticalObstacle);
 void DrawEnemies(Enemy *head);
 void FreeEnemies(Enemy *head);
 
+// Funções para Pontuação e Nome do Jogador
 void SaveScore(const char *playerName, int score);
 void GetPlayerName(char *playerName);
 
+// Funções Auxiliares
 void trim(char* str);
+
 
 void StartGame() {
     const int screenWidth = 1600;
