@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define SCREEN_WIDTH 1600
+#define SCREEN_HEIGHT 900
 #define MAX_PLAYERS 100
 #define MAX_NAME_LENGTH 20
 #define TOP_PLAYERS 5
@@ -111,13 +113,14 @@ int ShowMenu(void) {
     return 0;
 }
 
-// Função para exibir a tela de configurações com o easter egg
 float ShowSettings(void) {
     LoadResources();  // Carrega recursos ao entrar nas configurações, se ainda não carregados
 
-    Rectangle volumeBar = {GetScreenWidth() / 2 - 150, 200, 300, 20};
+    Font fonte = LoadFont("Fontes/coiso-Fredoka-one/coiso-FredokaOne-Regular.ttf");
+
+    Rectangle volumeBar = {SCREEN_WIDTH / 2 - 150, 200, 300, 20};
     Rectangle volumeSlider = {volumeBar.x + (volumeBar.width * globalVolume) - 10, volumeBar.y - 5, 20, 30};
-    Rectangle easterEggTrigger = {10, GetScreenHeight() - 30, 10, 10}; // Pequeno quadrado no canto inferior esquerdo
+    Rectangle easterEggTrigger = {10, SCREEN_HEIGHT - 30, 10, 10}; // Pequeno quadrado no canto inferior esquerdo
 
     while (!WindowShouldClose()) {
         Vector2 mousePoint = GetMousePosition();
@@ -136,10 +139,17 @@ float ShowSettings(void) {
 
         BeginDrawing();
         ClearBackground(SKYBLUE);
+        
+        Vector2 settingsTextPosition = {SCREEN_WIDTH / 2 - 100, 100};
+        DrawTextEx(fonte, "AJUSTES", settingsTextPosition, 70, 1, WHITE);
 
-        DrawText("Configurações", GetScreenWidth() / 2 - 100, 100, 30, WHITE);
-        DrawText(TextFormat("Volume da Música: %.2f", globalVolume), GetScreenWidth() / 2 - 150, 160, 20, WHITE);
-        DrawText("Pressione ESC para retornar ao menu", GetScreenWidth() / 2 - 150, 400, 20, WHITE);
+
+        Vector2 volumeTextPosition = {SCREEN_WIDTH / 2 - 150, 160};
+        DrawTextEx(fonte, TextFormat("VOLUME DA MUSICA: %.2f", globalVolume),volumeTextPosition, 46, 1, WHITE);
+
+
+        Vector2 escTextPosition = {SCREEN_WIDTH / 2 - 150, 400};
+        DrawTextEx(fonte, "Pressione ESC para retornar ao menu", escTextPosition, 46, 1, WHITE);
 
         DrawRectangleRec(volumeBar, LIGHTGRAY);
         DrawRectangleRec(volumeSlider, DARKGRAY);
@@ -149,8 +159,8 @@ float ShowSettings(void) {
 
         // Exibe a foto se o easter egg foi ativado
         if (showPhoto) {
-            DrawTexture(easterEggImage, GetScreenWidth() / 2 - easterEggImage.width / 2, GetScreenHeight() / 2 - easterEggImage.height / 2, WHITE);
-            DrawText("Pressione ESC para fechar a imagem", GetScreenWidth() / 2 - 150, GetScreenHeight() / 2 + easterEggImage.height / 2 + 10, 20, WHITE);
+            DrawTexture(easterEggImage, SCREEN_WIDTH / 2 - easterEggImage.width / 2, SCREEN_HEIGHT / 2 - easterEggImage.height / 2, WHITE);
+            DrawText("Pressione ESC para fechar a imagem", SCREEN_WIDTH / 2 - 150, SCREEN_HEIGHT / 2 + easterEggImage.height / 2 + 10, 20, WHITE);
             if (IsKeyPressed(KEY_ESCAPE) || IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
                 showPhoto = false;  // Fecha a foto ao pressionar ESC ou clicar novamente
             }
@@ -207,20 +217,25 @@ void ShowHighscore(void) {
     PlayerScore topScores[TOP_PLAYERS];
     LoadAndSortScores(topScores);
 
+    Font fonte = LoadFont("Fontes/coiso-Fredoka-one/coiso-FredokaOne-Regular.ttf");
+
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(SKYBLUE);
 
-        DrawText("Highscore", GetScreenWidth() / 2 - 80, 100, 30, WHITE);
+        Vector2 highscoreTextPosition = {SCREEN_WIDTH / 2 - 80, 100};
+        DrawTextEx(fonte, "Highscore", highscoreTextPosition, 30, 1, WHITE);
 
         for (int i = 0; i < TOP_PLAYERS; i++) {
             if (strlen(topScores[i].name) > 0) {
-                DrawText(TextFormat("%d. %s - %d", i + 1, topScores[i].name, topScores[i].score),
-                         GetScreenWidth() / 2 - 100, 200 + i * 50, 20, WHITE);
+                Vector2 playerTextPosition = {SCREEN_WIDTH / 2 - 100, 200 + i * 50};
+                DrawTextEx(fonte, TextFormat("%d. %s - %d", i + 1, topScores[i].name, topScores[i].score),
+                            playerTextPosition, 20, 1, WHITE);
             }
         }
-
-        DrawText("Pressione ESC para retornar ao menu", GetScreenWidth() / 2 - 150, 500, 20, WHITE);
+        
+        Vector2 escTextPosition = {SCREEN_WIDTH / 2 - 150, 500};
+        DrawTextEx(fonte, "Pressione ESC para retornar ao menu",escTextPosition, 20, 1, WHITE);
         if (IsKeyPressed(KEY_ESCAPE)) break;
 
         EndDrawing();

@@ -62,6 +62,8 @@ void StartGame() {
     const int screenWidth = 1600;
     const int screenHeight = 900;
 
+    Font fonte = LoadFont("Fontes/coiso-Fredoka-one/coiso-FredokaOne-Regular.ttf");
+
     // Tamanho Fundo
     int alternateBackgroundHeight = screenHeight * 0.65f;
 
@@ -175,7 +177,8 @@ void StartGame() {
         DrawTextureEx(waveTexture, (Vector2){verticalObstacle.xPosition - waveTexture.width / 2, 90}, 0.0f, (float)screenHeight / waveTexture.height, WHITE);
 
         //score
-        DrawText(TextFormat("Score: %i", score), 10, 10, 20, DARKGRAY);
+        Vector2 scoreTextPosition = {10, 10};
+        DrawTextEx(fonte, TextFormat("Score: %i", score),scoreTextPosition, 20, 1, DARKGRAY);
 
         EndDrawing();
         
