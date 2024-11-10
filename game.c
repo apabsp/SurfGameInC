@@ -180,6 +180,7 @@
     bool CheckVerticalObstacleCollision(Vector2 playerPos, float playerRadius, VerticalObstacle obstacle);
     void UpdateVerticalObstacle(VerticalObstacle *obstacle);
     void RecuarObstacle(VerticalObstacle *obstacle);
+    bool CheckIfPlayerIsOnWave(Vector2 playerPos, float waveYThreshold);
 
     // Funções para Inimigos
     Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, Texture2D normalTexture, Texture2D specialTexture);
@@ -246,6 +247,10 @@
         Texture2D waveImage4 = LoadTexture("imagens/backgroundonda/wave6.png");
         Texture2D waveImage5 = LoadTexture("imagens/backgroundonda/wave7.png");
 
+        float gravity = 0.5f; // Força da gravidade
+        float verticalVelocity = 0.0f; // Velocidade vertical do jogador
+        bool isOnWave = true; // Flag para verificar se o jogador está na onda
+
         //declaração da onda
         WaveSegment *wave = NULL;
 
@@ -290,6 +295,35 @@
             }
 
             UpdateVerticalObstacle(&verticalObstacle);
+
+            //gravity
+
+            // Verifica a colisão do jogador com a onda
+            if(CheckIfPlayerIsOnWave(playerPos,400)){ // we need to hardset the wave height
+                isOnWave = true;
+                verticalVelocity = 0.0f; // Zera a velocidade vertical quando está na onda
+
+            }else{
+                isOnWave = false;
+
+                verticalVelocity += gravity; // Apply gravity if off the wave
+                playerPos.y += verticalVelocity;
+
+                if (playerPos.y + playerRadius > screenHeight) {
+                    playerPos.y = screenHeight - playerRadius; // Keep player within screen limits
+                    verticalVelocity = 0.0f;
+                }
+            }
+
+            // Aplica gravidade se o jogador não estiver na onda
+            if (!isOnWave) {
+                verticalVelocity += gravity; // Aumenta a velocidade vertical com a gravidade
+                playerPos.y += verticalVelocity; // Move o jogador para baixo
+                if (playerPos.y + playerRadius > screenHeight) {
+                    playerPos.y = screenHeight - playerRadius; // Limita ao chão
+                    verticalVelocity = 0.0f; // Para o movimento ao tocar o chão
+                }
+            }
 
             //DrawWaves(wave); 
 
@@ -389,6 +423,10 @@
 
     bool CheckVerticalObstacleCollision(Vector2 playerPos, float playerRadius, VerticalObstacle obstacle) {
         return playerPos.x - playerRadius <= obstacle.xPosition;
+    }
+
+    bool CheckIfPlayerIsOnWave(Vector2 playerPos, float waveYThreshold) {
+        return playerPos.y >= waveYThreshold;
     }
 
     // Função para atualizar a posição do obstáculo, movendo-o para a direita
