@@ -40,42 +40,75 @@ typedef struct {
     float recuoAmount;   // Quantidade de recuo quando um ponto é coletado
 } VerticalObstacle;
 
-typedef struct BackgroundSegment{
-
-    Vector2 position;     // Posição do segmento
-    Texture2D image;
-    struct BackgroundSegment *next;
-    struct BackgroundSegment *prev;
-
-} BackgroundSegment;
-
+// Estrutura para representar cada segmento da onda
+typedef struct WaveSegment {
+    Vector2 position;         // Posição do segmento da onda
+    float amplitude;          // Amplitude de oscilação
+    float speed;              // Velocidade do movimento
+    struct WaveSegment *next; // Ponteiro para o próximo segmento
+} WaveSegment;
 
 
 // Funções para o Jogo Principal
 void StartGame();
 
-//Funções para o background
-BackgroundSegment *AddBackgroundSegment(BackgroundSegment **head, Vector2 position, float height, Texture2D image){
-    BackgroundSegment *aux = *head;
-    BackgroundSegment *newNode = (BackgroundSegment *)malloc(sizeof(BackgroundSegment)); 
-    newNode->image = image;
-    
-    if (*head == NULL){
-        // is head
-         // SUPER SAIYANM
-        newNode->next = newNode;
-        *head = newNode;
-        return;
+// Função para adicionar um novo segmento de onda
+WaveSegment *AddWaveSegment(WaveSegment **head, Vector2 position, float amplitude, float speed) {
+    WaveSegment *newSegment = (WaveSegment *)malloc(sizeof(WaveSegment));
+    newSegment->position = position;
+    newSegment->amplitude = amplitude;
+    newSegment->speed = speed;
+
+    if (*head == NULL) {
+        // Se a lista estiver vazia, o novo segmento será o primeiro e aponta para ele mesmo
+        newSegment->next = newSegment;
+        *head = newSegment;
+    } else {
+        // Caso contrário, encontra o último segmento e adiciona o novo ao final da lista
+        WaveSegment *last = *head;
+        while (last->next != *head) {
+            last = last->next;
+        }
+        last->next = newSegment;
+        newSegment->next = *head;
     }
-
-    while(aux->next != *head){
-        aux = aux->next;
-
-    }
-    aux->next = newNode;
-    newNode->next = *head;
-
     return *head;
+}
+
+// Função para atualizar a posição dos segmentos da onda
+void UpdateWaveSegments(WaveSegment *head) {
+    if (head == NULL) return;
+
+    WaveSegment *current = head;
+    do {
+        current->position.x -= current->speed;
+        current->position.y += sin(current->position.x) * current->amplitude; // Movimento senoidal
+        current = current->next;
+    } while (current != head);
+}
+
+// Função para desenhar os segmentos da onda
+void DrawWaveSegments(WaveSegment *head, Texture2D waveTexture) {
+    if (head == NULL) return;
+
+    WaveSegment *current = head;
+    do {
+        DrawTextureEx(waveTexture, current->position, 0.0f, 0.5f, WHITE);
+        current = current->next;
+    } while (current != head);
+}
+
+// Função para liberar a memória dos segmentos da onda
+void FreeWaveSegments(WaveSegment *head) {
+    if (head == NULL) return;
+
+    WaveSegment *current = head;
+    WaveSegment *next;
+    do {
+        next = current->next;
+        free(current);
+        current = next;
+    } while (current != head);
 }
 
 // Funções para Nuvens
@@ -150,6 +183,9 @@ void StartGame() {
 
         // Atualiza a posição das nuvens
         UpdateClouds(clouds, screenWidth);
+
+        //declaração da onda
+        WaveSegment *wave = NULL;
         
         //faz a musica atualizar a cada frame
         UpdateMusicStream(backgroundMusic);
@@ -202,6 +238,11 @@ void StartGame() {
             break;
         }
 
+        // Adiciona segmentos de onda na posição inicial
+        for (int i = 0; i < 10; i++) {
+            AddWaveSegment(&wave, (Vector2){1600 + i * 100, 300}, 20, 2.0f); // Posição inicial, amplitude e velocidade
+        }
+
         // Renderização
         BeginDrawing();
         ClearBackground(SKYBLUE);
@@ -209,8 +250,13 @@ void StartGame() {
         // nuvem    
         DrawClouds(clouds);
 
-        //mar
-        DrawRectangle(0, screenHeight - alternateBackgroundHeight, screenWidth, alternateBackgroundHeight, DARKBLUE);
+        //ondas
+        UpdateWaveSegments(wave);
+
+        BeginDrawing();
+        ClearBackground(SKYBLUE);
+        DrawWaveSegments(wave, waveTexture);
+        EndDrawing();
 
         // Renderiza o personagem
         float scale = 0.16f;
