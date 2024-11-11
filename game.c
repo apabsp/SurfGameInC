@@ -152,9 +152,11 @@
         if (head == NULL) return;
 
         WaveSegment *current = head;
+        
         do {
             // Move the wave segment to the left
             current->position.x -= current->speed;
+            current->position.y = 400;
             
 
             // Verifica se o segmento saiu da tela pela esquerda
