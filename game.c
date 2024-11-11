@@ -147,6 +147,27 @@
         } while (current != head);
     }
 
+    void UpdateWaveSegmentsStatic(WaveSegment *head){
+
+        if (head == NULL) return;
+
+        WaveSegment *current = head;
+        do {
+            // Move the wave segment to the left
+            current->position.x -= current->speed;
+            
+
+            // Verifica se o segmento saiu da tela pela esquerda
+            if (current->position.x < -current->image.width * 0.5f) {
+                // Se saiu, reposiciona para o lado direito da tela
+                current->position.x = 1600;
+            }
+
+            current = current->next;
+        } while (current != head);
+
+    }
+
     // Função para desenhar os segmentos da onda
     void DrawWaveSegments(WaveSegment *head) {
         if (head == NULL) return;
@@ -205,7 +226,7 @@
         Font fonte = LoadFont("Fontes/coiso-Fredoka-one/coiso-FredokaOne-Regular.ttf");
 
         // Tamanho Fundo
-        int alternateBackgroundHeight = screenHeight * 0.65f;
+        int alternateBackgroundHeight = screenHeight * 0.50f;
 
         // Inicializa nuvens
         Cloud clouds[MAX_CLOUDS];
@@ -253,6 +274,7 @@
 
         //declaração da onda
         WaveSegment *wave = NULL;
+        WaveSegment *staticWave = NULL;
 
             // Add wave segments to the list
         AddWaveSegment(&wave, (Vector2){400, 200}, 20.0f, 2.0f, waveImage1);
@@ -260,6 +282,13 @@
         AddWaveSegment(&wave, (Vector2){1800, 200}, 30.0f, 2.0f, waveImage3);
         AddWaveSegment(&wave, (Vector2){2200, 200}, 30.0f, 2.0f, waveImage4);
         AddWaveSegment(&wave, (Vector2){2600, 200}, 30.0f, 2.0f, waveImage5);
+
+            //Static waves
+        AddWaveSegment(&staticWave, (Vector2){400, 200}, 20.0f, 2.0f, waveImage1);
+        AddWaveSegment(&staticWave, (Vector2){1200, 200}, 25.0f, 2.0f, waveImage2);
+        AddWaveSegment(&staticWave, (Vector2){1800, 200}, 30.0f, 2.0f, waveImage3);
+        AddWaveSegment(&staticWave, (Vector2){2200, 200}, 30.0f, 2.0f, waveImage4);
+        AddWaveSegment(&staticWave, (Vector2){2600, 200}, 30.0f, 2.0f, waveImage5);
 
         
         while (!WindowShouldClose()) {
@@ -334,7 +363,9 @@
                 float enemyYPosition;
                 if (isSpecial) {
                     // Inimigos especiais podem aparecer em qualquer lugar da tela
-                    enemyYPosition = GetRandomValue(20, screenHeight - 20);
+                    //enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20); 
+                    //enemyYPosition = screenHeight-20;
+                    enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20); 
                 } else {
                     // Inimigos comuns (tubarões) só aparecem na área de água
                     enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20); // gotta get this
@@ -360,7 +391,9 @@
 
             //ondas
             UpdateWaveSegments(wave);
+            UpdateWaveSegmentsStatic(staticWave);
             DrawWaveSegments(wave);
+            DrawWaveSegments(staticWave);
 
             // Renderiza o personagem
             float scale = 0.16f;
