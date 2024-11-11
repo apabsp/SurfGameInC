@@ -247,7 +247,7 @@
         Texture2D waveImage4 = LoadTexture("imagens/backgroundonda/wave6.png");
         Texture2D waveImage5 = LoadTexture("imagens/backgroundonda/wave7.png");
 
-        float gravity = 0.5f; // Força da gravidade
+        float gravity = 0.05f; // Força da gravidade
         float verticalVelocity = 0.0f; // Velocidade vertical do jogador
         bool isOnWave = true; // Flag para verificar se o jogador está na onda
 
@@ -337,7 +337,7 @@
                     enemyYPosition = GetRandomValue(20, screenHeight - 20);
                 } else {
                     // Inimigos comuns (tubarões) só aparecem na área de água
-                    enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20);
+                    enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20); // gotta get this
                 }
                 enemies = AddEnemy(enemies, (Vector2){screenWidth + 20, enemyYPosition}, 25, isSpecial, enemyTexture, specialEnemyTexture);
             }
