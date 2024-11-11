@@ -34,6 +34,7 @@
         Vector2 position;    // Posição da nuvem
         float speed;         // Velocidade de movimento da nuvem
         float size;          // Tamanho da nuvem
+        Texture2D texture;   // imagem da nuvem
     } Cloud;
 
     // Estrutura para representar o obstáculo vertical (onda)
@@ -440,6 +441,7 @@
         strcpy(playerName, "");
 
         // Libera a memória das texturas e audio
+        UnloadTexture(clouds[0].texture);
         UnloadTexture(playerTexture);
         UnloadTexture(enemyTexture);
         UnloadTexture(specialEnemyTexture);
@@ -484,13 +486,16 @@
     }
 
     void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight) {
-        for (int i = 0; i < MAX_CLOUDS; i++) {
-            clouds[i].position.x = GetRandomValue(0, screenWidth);
-            clouds[i].position.y = GetRandomValue(20, screenHeight * 0.35f); // Área no céu (acima da água)
-            clouds[i].speed = GetRandomValue(10, 30) / 10.0f; // Velocidade lenta para movimento suave
-            clouds[i].size = GetRandomValue(20, 60); // Tamanho aleatório das nuvens
-        }
+    Texture2D cloudTexture = LoadTexture("imagens/nuvem.png");  // Carregue a textura da nuvem
+
+    for (int i = 0; i < MAX_CLOUDS; i++) {
+        clouds[i].position.x = GetRandomValue(0, screenWidth);
+        clouds[i].position.y = GetRandomValue(20, screenHeight * 0.35f); // Área no céu (acima da água)
+        clouds[i].speed = GetRandomValue(10, 30) / 10.0f; // Velocidade lenta para movimento suave
+        clouds[i].size = GetRandomValue(20, 60); // Tamanho aleatório das nuvens
+        clouds[i].texture = cloudTexture; // Atribui a textura às nuvens
     }
+}
 
     void UpdateClouds(Cloud clouds[], int screenWidth) {
         for (int i = 0; i < MAX_CLOUDS; i++) {
@@ -507,7 +512,7 @@
 
     void DrawClouds(Cloud clouds[]) {
         for (int i = 0; i < MAX_CLOUDS; i++) {
-            DrawEllipse(clouds[i].position.x, clouds[i].position.y, clouds[i].size * 2, clouds[i].size, WHITE);
+            DrawTextureEx(clouds[i].texture, clouds[i].position, 0.0f, clouds[i].size / 50.0f, WHITE);
         }
     }
 
