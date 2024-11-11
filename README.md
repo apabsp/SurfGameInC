@@ -6,21 +6,16 @@
 
 Picolé, um simpático pinguim, decidiu tirar férias em Pernambuco e foi parar nas belíssimas águas de Fernando de Noronha. Porém, ao perceber que a saudade de casa apertava, ele viu que precisaria de ajuda para enfrentar a longa jornada de volta. Foi então que conheceu Canudo, uma tartaruga amigável e corajosa, que se ofereceu para ser sua prancha. Juntos, Picolé e Canudo enfrentam ondas desafiadoras, desviar de tubarões e superar obstáculos pelo caminho, tudo para que o pequeno pinguim consiga voltar em segurança ao seu lar.
 
-## 👀 Preview
-Lorem Ipsum is simply dummy text of the printing and typesetting industry.
 
-<div id="top" align="center">
-    <a href="https://github.com/Thomazrlima/MyAnimeList-Theme#readme">
-        <img src="https://raw.githubusercontent.com/iuricode/readme-template/main/repositorio/imagem.png" width="700">
-    </a>
-</div>
+## 🚀 Como Jogar
 
-## 🚀 Features
+No jogo, você controla o personagem Picolé, o pinguim, usando as teclas **W, A, S e D** para movimentá-lo para cima, para baixo, para a esquerda e para a direita.
 
-- **Lorem Ipsum 1:** It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.
-- **Lorem Ipsum 2:** It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
+Seu objetivo é coletar os picolés espalhados pela tela, pois cada picolé coletado atrasa o avanço da onda que o persegue. É essencial evitar colisões com os tubarões que cruzam o caminho; bater neles não é permitido e pode encerrar a partida.
 
-## 🪄 How to Use
+Por fim, fique atento à onda que avança constantemente. Se Picolé encostar na onda, o jogo termina.
+
+## 🪄 Instalação
 
 
 1. Primeiro você precisa instalar a biblioteca "raylib" na sua maquina linux, para isso entre no caminho do arquivo (raylib-5.0_linux_amd64)
