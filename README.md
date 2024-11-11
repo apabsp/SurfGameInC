@@ -1,25 +1,21 @@
-# SurfGameInC
+# Picolé Adventures
+
+![Imagem do WhatsApp de 2024-11-04 à(s) 22 19 44_daf1c4a1](https://github.com/user-attachments/assets/989076c7-569e-45c9-97a6-4ec72d2b3569)
+
+## 🐧 História
+
+Picolé, um simpático pinguim, decidiu tirar férias em Pernambuco e foi parar nas belíssimas águas de Fernando de Noronha. Porém, ao perceber que a saudade de casa apertava, ele viu que precisaria de ajuda para enfrentar a longa jornada de volta. Foi então que conheceu Canudo, uma tartaruga amigável e corajosa, que se ofereceu para ser sua prancha. Juntos, Picolé e Canudo enfrentam ondas desafiadoras, desviar de tubarões e superar obstáculos pelo caminho, tudo para que o pequeno pinguim consiga voltar em segurança ao seu lar.
 
 
-## 😶‍🌫️ Overview
+## 🚀 Como Jogar
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+No jogo, você controla o personagem Picolé, o pinguim, usando as teclas **W, A, S e D** para movimentá-lo para cima, para baixo, para a esquerda e para a direita.
 
-## 👀 Preview
-Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+Seu objetivo é coletar os picolés espalhados pela tela, pois cada picolé coletado atrasa o avanço da onda que o persegue. É essencial evitar colisões com os tubarões que cruzam o caminho; bater neles não é permitido e pode encerrar a partida.
 
-<div id="top" align="center">
-    <a href="https://github.com/Thomazrlima/MyAnimeList-Theme#readme">
-        <img src="https://raw.githubusercontent.com/iuricode/readme-template/main/repositorio/imagem.png" width="700">
-    </a>
-</div>
+Por fim, fique atento à onda que avança constantemente. Se Picolé encostar na onda, o jogo termina.
 
-## 🚀 Features
-
-- **Lorem Ipsum 1:** It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages.
-- **Lorem Ipsum 2:** It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-
-## 🪄 How to Use
+## 🪄 Instalação
 
 
 1. Primeiro você precisa instalar a biblioteca "raylib" na sua maquina linux, para isso entre no caminho do arquivo (raylib-5.0_linux_amd64)
@@ -33,7 +29,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
    Agora seu "raylib" está pronto para ser usado
 3. no terminal linux dentro do diretorio onde se encontra o jogo coloque.
    ```
-   gcc *.c -o surfgame -lraylib
+   gcc *.c -o surfgame -lraylib -lm
    ```
 4. Após isso apenas rode o jogo.
    ```
@@ -41,9 +37,6 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
    ```
 
 
-## 💞 Acknowledgments
-
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
 
 ## 👩‍💻 Membros
 

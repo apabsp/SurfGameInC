@@ -34,6 +34,7 @@
         Vector2 position;    // Posição da nuvem
         float speed;         // Velocidade de movimento da nuvem
         float size;          // Tamanho da nuvem
+        Texture2D texture;   // imagem da nuvem
     } Cloud;
 
     // Estrutura para representar o obstáculo vertical (onda)
@@ -115,7 +116,6 @@
 
         return wave;
     }   
-
     // change ALL wave speeds!!!!! function idea. this will change player experience
 
     void DrawWaves(WaveSegment *wave) {
