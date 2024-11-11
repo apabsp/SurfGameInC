@@ -54,11 +54,11 @@
 
     // Funções para o Jogo Principal
     void StartGame();
-    // Função para adicionar um novo segmento de onda
+    
+    // Funções da Onda
     WaveSegment *AddWaveSegment(WaveSegment **head, Vector2 position, float amplitude, float speed, Texture2D image);
     WaveSegment *InitializeWaves();
     void DrawWaves(WaveSegment *wave);
-    // Função para atualizar a posição dos segmentos da onda
     void UpdateWaveSegments(WaveSegment *head);
     void UpdateWaveSegmentsStatic(WaveSegment *head);
     void DrawWaveSegments(WaveSegment *head);
