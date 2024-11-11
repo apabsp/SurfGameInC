@@ -38,7 +38,8 @@
     typedef struct {
         float xPosition;     // Posição fixa no eixo X
         float speed;         // Velocidade de movimento da onda
-        float recuoAmount;   // Quantidade de recuo quando um ponto é coletado
+        bool isRecoiling;     // flag de recuo
+        float recuoTimer;     // tempo de recuo
     } VerticalObstacle;
 
     // Estrutura para representar cada segmento da onda
@@ -53,143 +54,18 @@
 
     // Funções para o Jogo Principal
     void StartGame();
-
     // Função para adicionar um novo segmento de onda
-    WaveSegment *AddWaveSegment(WaveSegment **head, Vector2 position, float amplitude, float speed, Texture2D image) {
-        WaveSegment *newSegment = (WaveSegment *)malloc(sizeof(WaveSegment));
-        newSegment->position = position;
-        newSegment->amplitude = amplitude;
-        newSegment->speed = speed;
-        newSegment->image = image;
-
-        if (*head == NULL) {
-            // Se a lista estiver vazia, o novo segmento será o primeiro e aponta para ele mesmo
-            newSegment->next = newSegment;
-            *head = newSegment;
-        } else {
-            // Caso contrário, encontra o último segmento e adiciona o novo ao final da lista
-            WaveSegment *last = *head;
-            while (last->next != *head) {
-                last = last->next;
-            }
-            last->next = newSegment;
-            newSegment->next = *head;
-        }
-        return *head;
-    }
-
-    WaveSegment *InitializeWaves() {
-        WaveSegment *wave = NULL;
-        Texture2D waveImage1, waveImage2, waveImage3;
-        
-        // Carrega texturas das ondas (garanta que esses arquivos existam no caminho especificado)
-        waveImage1 = LoadTexture("imagens/backgroundonda/wave2.png"); 
-        if (waveImage1.id == 0) {
-            TraceLog(LOG_ERROR, "Erro ao carregar a textura wave2.png");
-        } else {
-            TraceLog(LOG_INFO, "Textura wave2.png carregada com sucesso");
-        }
-        
-        waveImage2 = LoadTexture("imagens/backgroundonda/wave3.png");
-        if (waveImage2.id == 0) {
-            TraceLog(LOG_ERROR, "Erro ao carregar a textura wave3.png");
-        } else {
-            TraceLog(LOG_INFO, "Textura wave3.png carregada com sucesso");
-        }
-
-        waveImage3 = LoadTexture("imagens/backgroundonda/wave4.png");
-        if (waveImage3.id == 0) { 
-            TraceLog(LOG_ERROR, "Erro ao carregar a textura wave4.png");
-        } else {
-            TraceLog(LOG_INFO, "Textura wave4.png carregada com sucesso");
-        }
-
-        
-        
-        // Adiciona segmentos de onda com diferentes texturas e posições
-        AddWaveSegment(&wave, (Vector2){2200, 300}, 20.0f, 2.0f, waveImage1);
-        AddWaveSegment(&wave, (Vector2){1600, 300}, 25.0f, 2.0f, waveImage2);
-        AddWaveSegment(&wave, (Vector2){1200, 300}, 30.0f, 2.0f, waveImage3);
-
-        return wave;
-    }   
-    // change ALL wave speeds!!!!! function idea. this will change player experience
-
-    void DrawWaves(WaveSegment *wave) {
-    if (wave == NULL) return;
-    UpdateWaveSegments(wave); // Atualiza a posição das ondas
-    DrawWaveSegments(wave);   // Desenha os segmentos
-    }
-
-
+    WaveSegment *AddWaveSegment(WaveSegment **head, Vector2 position, float amplitude, float speed, Texture2D image);
+    WaveSegment *InitializeWaves();
+    void DrawWaves(WaveSegment *wave);
     // Função para atualizar a posição dos segmentos da onda
-    void UpdateWaveSegments(WaveSegment *head) {
-        if (head == NULL) return;
+    void UpdateWaveSegments(WaveSegment *head);
+    void UpdateWaveSegmentsStatic(WaveSegment *head);
+    void DrawWaveSegments(WaveSegment *head);
+    void FreeWaveSegments(WaveSegment *head);
 
-        WaveSegment *current = head;
-        do {
-            // Move the wave segment to the left
-            current->position.x -= current->speed;
-            
-            // Movimento senoidal
-            current->position.y = 300 + sin(current->position.x * 0.05f) * current->amplitude;
-
-            // Verifica se o segmento saiu da tela pela esquerda
-            if (current->position.x < -current->image.width * 0.5f) {
-                // Se saiu, reposiciona para o lado direito da tela
-                current->position.x = 1600;
-            }
-
-            current = current->next;
-        } while (current != head);
-    }
-
-    void UpdateWaveSegmentsStatic(WaveSegment *head){
-
-        if (head == NULL) return;
-
-        WaveSegment *current = head;
-        
-        do {
-            // Move the wave segment to the left
-            current->position.x -= current->speed;
-            current->position.y = 400;
-            
-
-            // Verifica se o segmento saiu da tela pela esquerda
-            if (current->position.x < -current->image.width * 0.5f) {
-                // Se saiu, reposiciona para o lado direito da tela
-                current->position.x = 1600;
-            }
-
-            current = current->next;
-        } while (current != head);
-
-    }
-
-    // Função para desenhar os segmentos da onda
-    void DrawWaveSegments(WaveSegment *head) {
-        if (head == NULL) return;
-
-        WaveSegment *current = head;
-        do {
-            DrawTextureEx(current->image, current->position, 0.0f, 0.5f, WHITE);
-            current = current->next;
-        } while (current != head);
-    }
-
-    // Função para liberar a memória dos segmentos da onda
-    void FreeWaveSegments(WaveSegment *head) {
-        if (head == NULL) return;
-
-        WaveSegment *current = head;
-        WaveSegment *next;
-        do {
-            next = current->next;
-            free(current);
-            current = next;
-        } while (current != head);
-    }
+    void UpdateWaveSegments(WaveSegment *head);
+    void DrawWaveSegments(WaveSegment *head);
 
     // Funções para Nuvens
     void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight, Texture2D cloudTexture);
@@ -251,7 +127,7 @@
         int score = 0;
         float enemySpeed = 200;
         Enemy *enemies = NULL;
-        VerticalObstacle verticalObstacle = {70, 0.35f, 70}; //local inicial (screenwidth), velocidade e recuo da onda
+        VerticalObstacle verticalObstacle = {70, 0.32f}; //local inicial (screenwidth) e velocidade 
 
         //texturas
         Texture2D playerTexture = LoadTexture("imagens/picole.png");
@@ -456,7 +332,14 @@
 
     // Função para atualizar a posição do obstáculo, movendo-o para a direita
     void UpdateVerticalObstacle(VerticalObstacle *obstacle) {
-        obstacle->xPosition += obstacle->speed; // Move para a direita
+        if (obstacle->isRecoiling) {
+            obstacle->recuoTimer -= GetFrameTime(); // Decrementa o temporizador com o tempo do quadro
+            if (obstacle->recuoTimer <= 0) {
+                obstacle->isRecoiling = false;       // Desativa o recuo
+                obstacle->speed = fabs(obstacle->speed); // Volta a velocidade para o movimento à direita
+            }
+        }
+        obstacle->xPosition += obstacle->speed; // Move o obstáculo
 
         // Garante que o obstáculo não ultrapasse o limite direito da tela
         if (obstacle->xPosition > 1600) {
@@ -466,11 +349,9 @@
 
     // Função para recuar o obstáculo quando o jogador marca ponto
     void RecuarObstacle(VerticalObstacle *obstacle) {
-        obstacle->xPosition -= obstacle->recuoAmount; // Recuo para a esquerda
-
-        if (obstacle->xPosition < 100) {
-            obstacle->xPosition = 100;
-        }
+        obstacle->isRecoiling = true;         // Ativa o recuo
+        obstacle->speed = -fabs(obstacle->speed);  // Torna a velocidade negativa
+        obstacle->recuoTimer = 2.0f;          // Define o tempo de recuo para 0.5 segundos
     }
 
     void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight, Texture2D cloudTexture) {
@@ -661,4 +542,141 @@
         
         // Null-terminate the trimmed string
         *(end + 1) = '\0';
+    }
+
+    // Função para adicionar um novo segmento de onda
+    WaveSegment *AddWaveSegment(WaveSegment **head, Vector2 position, float amplitude, float speed, Texture2D image) {
+        WaveSegment *newSegment = (WaveSegment *)malloc(sizeof(WaveSegment));
+        newSegment->position = position;
+        newSegment->amplitude = amplitude;
+        newSegment->speed = speed;
+        newSegment->image = image;
+
+        if (*head == NULL) {
+            // Se a lista estiver vazia, o novo segmento será o primeiro e aponta para ele mesmo
+            newSegment->next = newSegment;
+            *head = newSegment;
+        } else {
+            // Caso contrário, encontra o último segmento e adiciona o novo ao final da lista
+            WaveSegment *last = *head;
+            while (last->next != *head) {
+                last = last->next;
+            }
+            last->next = newSegment;
+            newSegment->next = *head;
+        }
+        return *head;
+    }
+
+    WaveSegment *InitializeWaves() {
+        WaveSegment *wave = NULL;
+        Texture2D waveImage1, waveImage2, waveImage3;
+        
+        // Carrega texturas das ondas (garanta que esses arquivos existam no caminho especificado)
+        waveImage1 = LoadTexture("imagens/backgroundonda/wave2.png"); 
+        if (waveImage1.id == 0) {
+            TraceLog(LOG_ERROR, "Erro ao carregar a textura wave2.png");
+        } else {
+            TraceLog(LOG_INFO, "Textura wave2.png carregada com sucesso");
+        }
+        
+        waveImage2 = LoadTexture("imagens/backgroundonda/wave3.png");
+        if (waveImage2.id == 0) {
+            TraceLog(LOG_ERROR, "Erro ao carregar a textura wave3.png");
+        } else {
+            TraceLog(LOG_INFO, "Textura wave3.png carregada com sucesso");
+        }
+
+        waveImage3 = LoadTexture("imagens/backgroundonda/wave4.png");
+        if (waveImage3.id == 0) { 
+            TraceLog(LOG_ERROR, "Erro ao carregar a textura wave4.png");
+        } else {
+            TraceLog(LOG_INFO, "Textura wave4.png carregada com sucesso");
+        }
+
+        
+        
+        // Adiciona segmentos de onda com diferentes texturas e posições
+        AddWaveSegment(&wave, (Vector2){2200, 300}, 20.0f, 2.0f, waveImage1);
+        AddWaveSegment(&wave, (Vector2){1600, 300}, 25.0f, 2.0f, waveImage2);
+        AddWaveSegment(&wave, (Vector2){1200, 300}, 30.0f, 2.0f, waveImage3);
+
+        return wave;
+    }   
+    // change ALL wave speeds!!!!! function idea. this will change player experience
+
+    void DrawWaves(WaveSegment *wave) {
+    if (wave == NULL) return;
+    UpdateWaveSegments(wave); // Atualiza a posição das ondas
+    DrawWaveSegments(wave);   // Desenha os segmentos
+    }
+
+
+    // Função para atualizar a posição dos segmentos da onda
+    void UpdateWaveSegments(WaveSegment *head) {
+        if (head == NULL) return;
+
+        WaveSegment *current = head;
+        do {
+            // Move the wave segment to the left
+            current->position.x -= current->speed;
+            
+            // Movimento senoidal
+            current->position.y = 300 + sin(current->position.x * 0.05f) * current->amplitude;
+
+            // Verifica se o segmento saiu da tela pela esquerda
+            if (current->position.x < -current->image.width * 0.5f) {
+                // Se saiu, reposiciona para o lado direito da tela
+                current->position.x = 1600;
+            }
+
+            current = current->next;
+        } while (current != head);
+    }
+
+    void UpdateWaveSegmentsStatic(WaveSegment *head){
+
+        if (head == NULL) return;
+
+        WaveSegment *current = head;
+        
+        do {
+            // Move the wave segment to the left
+            current->position.x -= current->speed;
+            current->position.y = 400;
+            
+
+            // Verifica se o segmento saiu da tela pela esquerda
+            if (current->position.x < -current->image.width * 0.5f) {
+                // Se saiu, reposiciona para o lado direito da tela
+                current->position.x = 1600;
+            }
+
+            current = current->next;
+        } while (current != head);
+
+    }
+
+    // Função para desenhar os segmentos da onda
+    void DrawWaveSegments(WaveSegment *head) {
+        if (head == NULL) return;
+
+        WaveSegment *current = head;
+        do {
+            DrawTextureEx(current->image, current->position, 0.0f, 0.5f, WHITE);
+            current = current->next;
+        } while (current != head);
+    }
+
+    // Função para liberar a memória dos segmentos da onda
+    void FreeWaveSegments(WaveSegment *head) {
+        if (head == NULL) return;
+
+        WaveSegment *current = head;
+        WaveSegment *next;
+        do {
+            next = current->next;
+            free(current);
+            current = next;
+        } while (current != head);
     }
