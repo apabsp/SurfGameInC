@@ -4,7 +4,7 @@
 
 ## 🐧 História
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+Picolé, um simpático pinguim, decidiu tirar férias em Pernambuco e foi parar nas belíssimas águas de Fernando de Noronha. Porém, ao perceber que a saudade de casa apertava, ele viu que precisaria de ajuda para enfrentar a longa jornada de volta. Foi então que conheceu Canudo, uma tartaruga amigável e corajosa, que se ofereceu para ser sua prancha. Juntos, Picolé e Canudo enfrentam ondas desafiadoras, desviar de tubarões e superar obstáculos pelo caminho, tudo para que o pequeno pinguim consiga voltar em segurança ao seu lar.
 
 ## 👀 Preview
 Lorem Ipsum is simply dummy text of the printing and typesetting industry.
