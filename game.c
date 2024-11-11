@@ -52,11 +52,11 @@ typedef struct
 // Estrutura para representar cada segmento da onda
 typedef struct WaveSegment
 {
-    Vector2 position;         // Posição do segmento da onda
-    float amplitude;          // Amplitude de oscilação
-    float speed;              // Velocidade do movimento
-    struct WaveSegment *next; // Ponteiro para o próximo segmento
-    Texture2D image;          // Imagem da onda
+    Vector2 position;         
+    float amplitude;          
+    float speed;              
+    struct WaveSegment *next; 
+    Texture2D image;          
 } WaveSegment;
 
 // Funções para o Jogo Principal
@@ -72,15 +72,10 @@ WaveSegment *AddWaveSegment(WaveSegment **head, Vector2 position, float amplitud
     newSegment->image = image;
 
     if (*head == NULL)
-    {
-        // Se a lista estiver vazia, o novo segmento será o primeiro e aponta para ele mesmo
-        newSegment->next = newSegment;
+    {   newSegment->next = newSegment;
         *head = newSegment;
-    }
-    else
-    {
-        // Caso contrário, encontra o último segmento e adiciona o novo ao final da lista
-        WaveSegment *last = *head;
+    }else
+    {   WaveSegment *last = *head;
         while (last->next != *head)
         {
             last = last->next;
@@ -99,32 +94,23 @@ WaveSegment *InitializeWaves()
     // Carrega texturas das ondas (garanta que esses arquivos existam no caminho especificado)
     waveImage1 = LoadTexture("imagens/backgroundonda/wave2.png");
     if (waveImage1.id == 0)
-    {
-        TraceLog(LOG_ERROR, "Erro ao carregar a textura wave2.png");
-    }
-    else
-    {
-        TraceLog(LOG_INFO, "Textura wave2.png carregada com sucesso");
+    {TraceLog(LOG_ERROR, "Erro ao carregar a textura wave2.png");
+    }else
+    {TraceLog(LOG_INFO, "Textura wave2.png carregada com sucesso");
     }
 
     waveImage2 = LoadTexture("imagens/backgroundonda/wave3.png");
     if (waveImage2.id == 0)
-    {
-        TraceLog(LOG_ERROR, "Erro ao carregar a textura wave3.png");
-    }
-    else
-    {
-        TraceLog(LOG_INFO, "Textura wave3.png carregada com sucesso");
+    {TraceLog(LOG_ERROR, "Erro ao carregar a textura wave3.png");
+    }else
+    {TraceLog(LOG_INFO, "Textura wave3.png carregada com sucesso");
     }
 
     waveImage3 = LoadTexture("imagens/backgroundonda/wave4.png");
     if (waveImage3.id == 0)
-    {
-        TraceLog(LOG_ERROR, "Erro ao carregar a textura wave4.png");
-    }
-    else
-    {
-        TraceLog(LOG_INFO, "Textura wave4.png carregada com sucesso");
+    {TraceLog(LOG_ERROR, "Erro ao carregar a textura wave4.png");
+    }else
+    {TraceLog(LOG_INFO, "Textura wave4.png carregada com sucesso");
     }
 
     // Adiciona segmentos de onda com diferentes texturas e posições
@@ -171,30 +157,7 @@ void UpdateWaveSegments(WaveSegment *head)
     } while (current != head);
 }
 
-void UpdateWaveSegmentsStatic(WaveSegment *head)
-{
 
-    if (head == NULL)
-        return;
-
-    WaveSegment *current = head;
-
-    do
-    {
-        // Move the wave segment to the left
-        current->position.x -= current->speed;
-        current->position.y = 400;
-
-        // Verifica se o segmento saiu da tela pela esquerda
-        if (current->position.x < -current->image.width * 0.5f)
-        {
-            // Se saiu, reposiciona para o lado direito da tela
-            current->position.x = 1600;
-        }
-
-        current = current->next;
-    } while (current != head);
-}
 
 void UpdateWaveSegmentsStatic(WaveSegment *head)
 {
@@ -324,12 +287,14 @@ void StartGame()
     Enemy *enemies = NULL;
     VerticalObstacle verticalObstacle = {70, 0.35f, 70}; // local inicial (screenwidth), velocidade e recuo da onda
 
+    Vector2 oi = {150, 700};
+
     // texturas
     Texture2D playerTexture = LoadTexture("imagens/picole.png");
     Texture2D enemyTexture = LoadTexture("imagens/tub.png"); // tubaraoobstaculo.png
-    Texture2D specialEnemyTexture = LoadTexture("imagens/gelo.png");
+    Texture2D specialEnemyTexture = LoadTexture("imagens/backgroundonda/collectable1.png");
     Texture2D specialEnemyTexture2 = LoadTexture("imagens/tortuga.png");
-    Texture2D waveTexture = LoadTexture("imagens/waveHunt.png");
+    Texture2D waveTexture = LoadTexture("imagens/backgroundonda/waveHunt.png");
 
     SetTargetFPS(60);
 
@@ -364,6 +329,8 @@ void StartGame()
     AddWaveSegment(&staticWave, (Vector2){2600, 200}, 30.0f, 2.0f, waveStatic);
 
     bool foundTurtle = false;
+
+    DrawTextEx(fonte, "só de teste", (Vector2){100,100}, 30, 1, BLACK);
 
     while (!WindowShouldClose())
     {
@@ -440,7 +407,7 @@ void StartGame()
         }
 
         // DrawWaves(wave);
-
+        //DrawTextEx(fonte, "só de teste", (Vector2){screenWidth/2,screenHeight/2}, 30, 1, BLACK);
         // Adiciona novos inimigos
         if (GetRandomValue(0, 100) < 3)
         {
@@ -449,7 +416,7 @@ void StartGame()
             bool isTurtle = false;
 
             float enemyYPosition;
-
+            
             if (isSpecial == 0)
             {
                 // Inimigos especiais podem aparecer em qualquer lugar da tela
@@ -461,6 +428,7 @@ void StartGame()
             else if (isSpecial == 1)
             { // is turtle!
                 isTurtle = true;
+                printf("oi!");
                 enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20);
             }
             else
@@ -514,6 +482,8 @@ void StartGame()
         Vector2 scoreTextPosition = {10, 10};
         DrawTextEx(fonte, TextFormat("Score: %i", score), scoreTextPosition, 20, 1, DARKGRAY);
 
+        
+
         EndDrawing();
     }
 
@@ -522,15 +492,20 @@ void StartGame()
     {
         Texture2D image = LoadTexture("imagens/mensagem.png");
 
-        BeginDrawing();
-        ClearBackground(RAYWHITE); // Clear background each frame
-
-        showImageOfTurtle(image); // Function to display the image of the turtle
-
+        // Wait for Enter key press with proper screen refresh
         while (!IsKeyDown(KEY_ENTER))
         {
+            BeginDrawing();
+            ClearBackground(RAYWHITE); // Clear background each frame
+
+            // Display the image of the turtle and the score
+            showImageOfTurtle(image); // Function to display the image of the turtle
+            Vector2 scoreTextPosition = {10, 10};
+            DrawTextEx(fonte, TextFormat("Score: %i", score), scoreTextPosition, 20, 1, DARKGRAY);
+
+            EndDrawing();
         }
-        EndDrawing();
+
         // Set flag back to false and unload the texture
         foundTurtle = false;
         UnloadTexture(image);
@@ -664,9 +639,9 @@ Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, boo
     newEnemy->isSpecial = isSpecial;
     newEnemy->isTurtle= isSpecial2;
     newEnemy->texture = normalTexture; // Default to normal texture
-    if (isSpecial2) {
+    if (isSpecial2 == true) {
         newEnemy->texture = specialTexture2;
-    } else if (isSpecial) {
+    } else if (isSpecial == true) {
         newEnemy->texture = specialTexture;
     }
     newEnemy->next = head;
@@ -719,6 +694,9 @@ void DrawEnemies(Enemy *head)
     for (Enemy *e = head; e != NULL; e = e->next)
     {
         float scale = 0.35f; // Tamanho objeto
+        if (e->isSpecial == true){
+            scale =  0.15f; // scale do picolé
+        }
         DrawTextureEx(e->texture, (Vector2){e->position.x - e->texture.width * scale / 2, e->position.y - e->texture.height * scale / 2}, 0.0f, scale, WHITE);
     }
 }
@@ -754,6 +732,7 @@ int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **ene
             }
             else if (current->isTurtle)
             {
+                return 2;
                 // give turtle message
             }
             else
