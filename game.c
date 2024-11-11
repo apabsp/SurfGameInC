@@ -7,9 +7,6 @@
     #include <string.h>
     #include <ctype.h>
 
-    //gcc *.c -o surfgame -lraylib -lm 
-    //lm adds mathlibrary
-
     // Definições e constantes
     #define MAX_PLAYERS 100
     #define MAX_NAME_LENGTH 20
@@ -426,15 +423,6 @@
             // playerName is empty or just whitespace
         } else {
             SaveScore(playerName, score);
-        }
-
-
-
-        // Salva a pontuação com o nome capturado
-        if(strcmp(playerName, "") == 0){
-            
-        }else{
-        SaveScore(playerName, score);
         }
 
         strcpy(playerName, "");
