@@ -192,7 +192,7 @@
     }
 
     // Funções para Nuvens
-    void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight);
+    void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight, Texture2D cloudTexture);
     void UpdateClouds(Cloud clouds[], int screenWidth);
     void DrawClouds(Cloud clouds[]);
 
@@ -228,8 +228,9 @@
         int alternateBackgroundHeight = screenHeight * 0.50f;
 
         // Inicializa nuvens
+        Texture2D cloudTexture = LoadTexture("imagens/nuvem.png");
         Cloud clouds[MAX_CLOUDS];
-        InitializeClouds(clouds, screenWidth, screenHeight);
+        InitializeClouds(clouds, screenWidth, screenHeight, cloudTexture);
         
         //audio
         InitAudioDevice();
@@ -433,6 +434,7 @@
         UnloadTexture(specialEnemyTexture);
         UnloadTexture(waveTexture);
         FreeEnemies(enemies);
+        UnloadTexture(cloudTexture);
 
         UnloadMusicStream(backgroundMusic);
         CloseAudioDevice();
@@ -471,12 +473,13 @@
         }
     }
 
-    void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight) {
+    void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight, Texture2D cloudTexture) {
         for (int i = 0; i < MAX_CLOUDS; i++) {
             clouds[i].position.x = GetRandomValue(0, screenWidth);
-            clouds[i].position.y = GetRandomValue(20, screenHeight * 0.35f); // Área no céu (acima da água)
-            clouds[i].speed = GetRandomValue(10, 30) / 10.0f; // Velocidade lenta para movimento suave
-            clouds[i].size = GetRandomValue(20, 60); // Tamanho aleatório das nuvens
+            clouds[i].position.y = GetRandomValue(20, screenHeight * 0.15f);
+            clouds[i].speed = GetRandomValue(10, 30) / 10.0f;
+            clouds[i].size = GetRandomValue(200, 600);
+            clouds[i].texture = cloudTexture; // Atribui a textura
         }
     }
 
@@ -486,18 +489,20 @@
 
             if (clouds[i].position.x < -clouds[i].size * 2) {
                 clouds[i].position.x = screenWidth + clouds[i].size * 2;
-                clouds[i].position.y = GetRandomValue(20, screenWidth * 0.35f);
+                clouds[i].position.y = GetRandomValue(20, screenWidth * 0.15f);
                 clouds[i].speed = GetRandomValue(10, 30) / 10.0f;
-                clouds[i].size = GetRandomValue(20, 60);
+                clouds[i].size = GetRandomValue(200, 600);
             }
         }
     }
 
     void DrawClouds(Cloud clouds[]) {
         for (int i = 0; i < MAX_CLOUDS; i++) {
-            DrawEllipse(clouds[i].position.x, clouds[i].position.y, clouds[i].size * 2, clouds[i].size, WHITE);
+            float scale = clouds[i].size / (float)clouds[i].texture.width;
+            DrawTextureEx(clouds[i].texture, clouds[i].position, 0.0f, scale, WHITE);
         }
     }
+
 
     // Adiciona um novo inimigo à lista com textura específica para inimigos especiais
     Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, Texture2D normalTexture, Texture2D specialTexture) {
