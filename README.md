@@ -1,5 +1,6 @@
 # SurfGameInC
 
+![Imagem do WhatsApp de 2024-11-04 à(s) 22 19 44_daf1c4a1](https://github.com/user-attachments/assets/989076c7-569e-45c9-97a6-4ec72d2b3569)
 
 ## 😶‍🌫️ Overview
 
