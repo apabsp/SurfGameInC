@@ -423,14 +423,6 @@
             // Trim the playerName before checking
         trim(playerName);
 
-        if (strcmp(playerName, "") == 0) {
-            // playerName is empty or just whitespace
-        } else {
-            SaveScore(playerName, score);
-        }
-
-
-
         // Salva a pontuação com o nome capturado
         if(strcmp(playerName, "") == 0){
             
