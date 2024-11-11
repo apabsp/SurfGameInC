@@ -33,7 +33,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry.
    Agora seu "raylib" está pronto para ser usado
 3. no terminal linux dentro do diretorio onde se encontra o jogo coloque.
    ```
-   gcc *.c -o surfgame -lraylib
+   gcc *.c -o surfgame -lraylib -lm
    ```
 4. Após isso apenas rode o jogo.
    ```
