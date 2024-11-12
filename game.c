@@ -135,7 +135,7 @@
         //texturas
         Texture2D playerTexture = LoadTexture("imagens/picole.png");
         Texture2D enemyTexture = LoadTexture("imagens/tub.png"); //tubaraoobstaculo.png
-        Texture2D specialEnemyTexture = LoadTexture("imagens/backgroundonda/collectable1.png");
+        Texture2D specialEnemyTexture = LoadTexture("imagens/collectable1.png");
         Texture2D specialEnemyTexture2 = LoadTexture("imagens/tortuga.png");
         Texture2D waveTexture = LoadTexture("imagens/onda.png");
 
@@ -404,7 +404,7 @@
     void RecuarObstacle(VerticalObstacle *obstacle) {
         obstacle->isRecoiling = true;         // Ativa o recuo
         obstacle->speed = -fabs(obstacle->speed);  // Torna a velocidade negativa
-        obstacle->recuoTimer = 2.3f;          // Define o tempo de recuo para 2.3 segundos
+        obstacle->recuoTimer = 2.4f;          // Define o tempo de recuo para 2.4 segundos
     }
 
     void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight, Texture2D cloudTexture) {
