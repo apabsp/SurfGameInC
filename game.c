@@ -137,7 +137,7 @@
         Texture2D enemyTexture = LoadTexture("imagens/tub.png"); //tubaraoobstaculo.png
         Texture2D specialEnemyTexture = LoadTexture("imagens/collectable1.png");
         Texture2D specialEnemyTexture2 = LoadTexture("imagens/tortuga.png");
-        Texture2D waveTexture = LoadTexture("imagens/onda.png");
+        Texture2D waveTexture = LoadTexture("imagens/onda2.png");
         Texture2D fernando = LoadTexture("imagens/backgroundonda/matagal.png");
 
         SetTargetFPS(60);
@@ -306,7 +306,8 @@
             DrawEnemies(enemies);
 
             //onda
-            DrawTextureEx(waveTexture, (Vector2){verticalObstacle.xPosition - waveTexture.width / 2, 90}, 0.0f, (float)screenHeight / waveTexture.height, WHITE);
+            DrawTextureEx(waveTexture, (Vector2){verticalObstacle.xPosition - waveTexture.width / 2 - 850, 50}, 0.0f, (float)screenHeight / waveTexture.height, WHITE);
+
 
             //score
             Vector2 scoreTextPosition = {10, 10};
@@ -405,7 +406,7 @@
     void RecuarObstacle(VerticalObstacle *obstacle) {
         obstacle->isRecoiling = true;         // Ativa o recuo
         obstacle->speed = -fabs(obstacle->speed);  // Torna a velocidade negativa
-        obstacle->recuoTimer = 2.4f;          // Define o tempo de recuo para 2.4 segundos
+        obstacle->recuoTimer = 2.1f;          // Define o tempo de recuo para 2.4 segundos
     }
 
     void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight, Texture2D cloudTexture) {
