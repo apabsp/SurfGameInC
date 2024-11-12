@@ -148,6 +148,7 @@
         Texture2D waveImage3 = LoadTexture("imagens/backgroundonda/wave4.png");
         Texture2D waveImage4 = LoadTexture("imagens/backgroundonda/wave6.png");
         Texture2D waveImage5 = LoadTexture("imagens/backgroundonda/wave7.png");
+        Texture2D waveStatic = LoadTexture("imagens/waveCORRIGIDO 2.png");
 
         float gravity = 0.05f; // Força da gravidade
         float verticalVelocity = 0.0f; // Velocidade vertical do jogador
@@ -165,11 +166,11 @@
         AddWaveSegment(&wave, (Vector2){2600, 200}, 30.0f, 2.0f, waveImage5);
 
             //Static waves
-        AddWaveSegment(&staticWave, (Vector2){400, 200}, 20.0f, 2.0f, waveImage1);
-        AddWaveSegment(&staticWave, (Vector2){1200, 200}, 25.0f, 2.0f, waveImage2);
-        AddWaveSegment(&staticWave, (Vector2){1800, 200}, 30.0f, 2.0f, waveImage3);
-        AddWaveSegment(&staticWave, (Vector2){2200, 200}, 30.0f, 2.0f, waveImage4);
-        AddWaveSegment(&staticWave, (Vector2){2600, 200}, 30.0f, 2.0f, waveImage5);
+        AddWaveSegment(&staticWave, (Vector2){0, 200}, 20.0f, 2.0f, waveStatic);
+        AddWaveSegment(&staticWave, (Vector2){590, 200}, 25.0f, 2.0f, waveStatic);
+        AddWaveSegment(&staticWave, (Vector2){1180, 200}, 30.0f, 2.0f, waveStatic);
+        AddWaveSegment(&staticWave, (Vector2){1770, 200}, 30.0f, 2.0f, waveStatic);
+        AddWaveSegment(&staticWave, (Vector2){2360, 200}, 30.0f, 2.0f, waveStatic);
 
         bool foundTurtle = false;
 
@@ -714,28 +715,39 @@
         } while (current != head);
     }
 
-    void UpdateWaveSegmentsStatic(WaveSegment *head){
-
+    void UpdateWaveSegmentsStatic(WaveSegment *head) {
         if (head == NULL) return;
 
         WaveSegment *current = head;
-        
+        float waveWidth = 590; // Largura de cada segmento de onda
+        WaveSegment *rightmost = head; // Referência para o segmento mais à direita
+
+        // Encontra o segmento mais à direita da lista
         do {
-            // Move the wave segment to the left
-            current->position.x -= current->speed;
-            current->position.y = 400;
-            
-
-            // Verifica se o segmento saiu da tela pela esquerda
-            if (current->position.x < -current->image.width * 0.5f) {
-                // Se saiu, reposiciona para o lado direito da tela
-                current->position.x = 1600;
+            if (current->position.x > rightmost->position.x) {
+                rightmost = current;
             }
-
             current = current->next;
         } while (current != head);
 
+        // Atualiza cada segmento, mantendo a continuidade à direita
+        current = head;
+        do {
+            current->position.x -= current->speed;
+
+            // Quando o segmento sai pela esquerda, reposiciona imediatamente à direita do último
+            if (current->position.x < -waveWidth) {
+                current->position.x = rightmost->position.x + waveWidth;
+                rightmost = current; // Atualiza o último segmento visível
+            }
+
+            // Fixando a posição Y para manter a onda estática
+            current->position.y = 400;
+
+            current = current->next;
+        } while (current != head);
     }
+
 
     // Função para desenhar os segmentos da onda
     void DrawWaveSegments(WaveSegment *head) {
