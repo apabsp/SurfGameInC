@@ -12,6 +12,8 @@
     #define MAX_NAME_LENGTH 20
     #define TOP_PLAYERS 5
     #define MAX_CLOUDS 5 // Máximo de nuvens
+    #define SCREEN_WIDTH 1600
+    #define SCREEN_HEIGHT 900
 
     extern float globalVolume; // Puxa a variável do volume da janela settings
 
@@ -22,6 +24,7 @@
         Vector2 position;    // Posição do inimigo
         float radius;        // Raio do inimigo
         bool isSpecial;      // Indica se o inimigo é especial (moedas)
+        bool isTurtle;
         Texture2D texture;   // Textura do inimigo
         struct Enemy *next;  // Ponteiro para o próximo inimigo na lista
     } Enemy;
@@ -79,13 +82,13 @@
     bool CheckIfPlayerIsOnWave(Vector2 playerPos, float waveYThreshold);
 
     // Funções para Inimigos
-    Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, Texture2D normalTexture, Texture2D specialTexture);
+    Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, bool isSpecial2, Texture2D normalTexture, Texture2D specialTexture, Texture2D specialTexture2);
     void UpdateEnemies(Enemy *head, float speed);
     Enemy *RemoveEnemies(Enemy *head, int screenWidth, int *score);
     int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score, Sound coinSound, VerticalObstacle *verticalObstacle);
     void DrawEnemies(Enemy *head);
     void FreeEnemies(Enemy *head);
-
+    void showImageOfTurtle(Texture2D turtleLetter);
     // Funções para Pontuação e Nome do Jogador
     void SaveScore(const char *playerName, int score);
     void GetPlayerName(char *playerName);
@@ -132,7 +135,8 @@
         //texturas
         Texture2D playerTexture = LoadTexture("imagens/picole.png");
         Texture2D enemyTexture = LoadTexture("imagens/tub.png"); //tubaraoobstaculo.png
-        Texture2D specialEnemyTexture = LoadTexture("imagens/gelo.png");
+        Texture2D specialEnemyTexture = LoadTexture("imagens/backgroundonda/collectable1.png");
+        Texture2D specialEnemyTexture2 = LoadTexture("imagens/tortuga.png");
         Texture2D waveTexture = LoadTexture("imagens/onda.png");
 
         SetTargetFPS(60);
@@ -165,6 +169,8 @@
         AddWaveSegment(&staticWave, (Vector2){1800, 200}, 30.0f, 2.0f, waveImage3);
         AddWaveSegment(&staticWave, (Vector2){2200, 200}, 30.0f, 2.0f, waveImage4);
         AddWaveSegment(&staticWave, (Vector2){2600, 200}, 30.0f, 2.0f, waveImage5);
+
+        bool foundTurtle = false;
 
         
         while (!WindowShouldClose()) {
@@ -232,29 +238,49 @@
 
             //DrawWaves(wave); 
 
-            // Adiciona novos inimigos
-            if (GetRandomValue(0, 100) < 3) {
-                bool isSpecial = GetRandomValue(0, 4) == 0;
+        // Adiciona novos inimigos
+        if (GetRandomValue(0, 100) < 3){
+            int isSpecial = GetRandomValue(0, 4);
+            bool isIce = false;
+            bool isTurtle = false;
 
-                float enemyYPosition;
-                if (isSpecial) {
-                    // Inimigos especiais podem aparecer em qualquer lugar da tela
-                    //enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20); 
-                    //enemyYPosition = screenHeight-20;
-                    enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20); 
-                } else {
-                    // Inimigos comuns (tubarões) só aparecem na área de água
-                    enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20); // gotta get this
-                }
-                enemies = AddEnemy(enemies, (Vector2){screenWidth + 20, enemyYPosition}, 25, isSpecial, enemyTexture, specialEnemyTexture);
+            float enemyYPosition;
+            
+            if (isSpecial == 0)
+            {
+                // Inimigos especiais podem aparecer em qualquer lugar da tela
+                // enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20);
+                // enemyYPosition = screenHeight-20;
+                isIce = true;
+                enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20);
             }
+            else if (isSpecial == 1)
+            { // is turtle!
+                isTurtle = true;
+                printf("oi!");
+                enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20);
+            }
+            else
+            {
+                // Inimigos comuns (tubarões) só aparecem na área de água
+                enemyYPosition = GetRandomValue(screenHeight - alternateBackgroundHeight, screenHeight - 20); // gotta get this
+            }
+            enemies = AddEnemy(enemies, (Vector2){screenWidth + 20, enemyYPosition}, 25, isIce, isTurtle, enemyTexture, specialEnemyTexture, specialEnemyTexture2);
+        }
 
             // Atualiza a posição dos inimigos
             UpdateEnemies(enemies, enemySpeed * GetFrameTime());
 
             // Remove inimigos fora da tela e verifica colisões
             enemies = RemoveEnemies(enemies, screenWidth, &score);
-            if (CheckPlayerEnemyCollision(playerPos, playerRadius, &enemies, &score, pegarMoedaSound, &verticalObstacle)) {
+            if (CheckPlayerEnemyCollision(playerPos, playerRadius, &enemies, &score, pegarMoedaSound, &verticalObstacle) == 1)
+            {
+
+                break;
+            }
+            else if (CheckPlayerEnemyCollision(playerPos, playerRadius, &enemies, &score, pegarMoedaSound, &verticalObstacle) == 2)
+            {
+                foundTurtle = true;
                 break;
             }
 
@@ -287,6 +313,29 @@
 
             EndDrawing();
             
+        }
+        // while pra mostrar mensagem da tartaruga!!!!!!!!!!!!!!!!!!!!!!!
+        if (foundTurtle)
+        {
+            Texture2D image = LoadTexture("imagens/mensagem.png");
+
+            // Wait for Enter key press with proper screen refresh
+            while (!IsKeyDown(KEY_ENTER))
+            {
+                BeginDrawing();
+                ClearBackground(RAYWHITE); // Clear background each frame
+
+                // Display the image of the turtle and the score
+                showImageOfTurtle(image); // Function to display the image of the turtle
+                Vector2 scoreTextPosition = {10, 10};
+                DrawTextEx(fonte, TextFormat("Score: %i", score), scoreTextPosition, 20, 1, DARKGRAY);
+
+                EndDrawing();
+            }
+
+            // Set flag back to false and unload the texture
+            foundTurtle = false;
+            UnloadTexture(image);
         }
 
         // Captura o nome do jogador após o fim do jogo
@@ -322,6 +371,10 @@
         }
     }
 
+    void showImageOfTurtle(Texture2D turtleLetter){
+        DrawTexture(turtleLetter, SCREEN_WIDTH / 2 - turtleLetter.width / 2, SCREEN_HEIGHT / 2 - turtleLetter.height / 2, WHITE);
+    }
+
     bool CheckVerticalObstacleCollision(Vector2 playerPos, float playerRadius, VerticalObstacle obstacle) {
         return playerPos.x - playerRadius <= obstacle.xPosition;
     }
@@ -351,7 +404,7 @@
     void RecuarObstacle(VerticalObstacle *obstacle) {
         obstacle->isRecoiling = true;         // Ativa o recuo
         obstacle->speed = -fabs(obstacle->speed);  // Torna a velocidade negativa
-        obstacle->recuoTimer = 2.0f;          // Define o tempo de recuo para 0.5 segundos
+        obstacle->recuoTimer = 2.3f;          // Define o tempo de recuo para 2.3 segundos
     }
 
     void InitializeClouds(Cloud clouds[], int screenWidth, int screenHeight, Texture2D cloudTexture) {
@@ -386,12 +439,18 @@
 
 
     // Adiciona um novo inimigo à lista com textura específica para inimigos especiais
-    Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, Texture2D normalTexture, Texture2D specialTexture) {
+    Enemy *AddEnemy(Enemy *head, Vector2 position, float radius, bool isSpecial, bool isSpecial2, Texture2D normalTexture, Texture2D specialTexture, Texture2D specialTexture2){
         Enemy *newEnemy = (Enemy *)malloc(sizeof(Enemy));
         newEnemy->position = position;
         newEnemy->radius = radius;
         newEnemy->isSpecial = isSpecial;
-        newEnemy->texture = isSpecial ? specialTexture : normalTexture;
+        newEnemy->isTurtle= isSpecial2;
+        newEnemy->texture = normalTexture; // Default to normal texture
+        if (isSpecial2 == true) {
+            newEnemy->texture = specialTexture2;
+        } else if (isSpecial == true) {
+            newEnemy->texture = specialTexture;
+        }
         newEnemy->next = head;
         return newEnemy;
     }
@@ -427,37 +486,56 @@
     }
 
     // Desenha todos os inimigos usando a textura atribuída
-    void DrawEnemies(Enemy *head) {
-        for (Enemy *e = head; e != NULL; e = e->next) {
+    void DrawEnemies(Enemy *head)
+    {
+        for (Enemy *e = head; e != NULL; e = e->next)
+        {
             float scale = 0.35f; // Tamanho objeto
+            if (e->isSpecial == true || e->isTurtle == true){
+                scale =  0.15f; // scale do picolé
+            }
             DrawTextureEx(e->texture, (Vector2){e->position.x - e->texture.width * scale / 2, e->position.y - e->texture.height * scale / 2}, 0.0f, scale, WHITE);
         }
     }
 
     // Verifica colisão entre o jogador e os inimigos, removendo os amarelos ao colidir
-    int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score, Sound coinSound, VerticalObstacle *verticalObstacle) {
+    int CheckPlayerEnemyCollision(Vector2 playerPos, float playerRadius, Enemy **enemies, int *score, Sound coinSound, VerticalObstacle *verticalObstacle)
+    {
         Enemy *current = *enemies;
         Enemy *previous = NULL;
 
-        while (current != NULL) {
-            if (CheckCollisionCircles(playerPos, playerRadius, current->position, current->radius)) {
-                if (current->isSpecial) {
+        while (current != NULL)
+        {
+            if (CheckCollisionCircles(playerPos, playerRadius, current->position, current->radius))
+            {
+                if (current->isSpecial)
+                {
                     (*score)++; // Incrementa a pontuação ao tocar um obstáculo especial
                     PlaySound(coinSound);
                     RecuarObstacle(verticalObstacle);
 
                     // Remove o obstáculo especial da lista
-                    if (previous == NULL) {
+                    if (previous == NULL)
+                    {
                         *enemies = current->next;
-                    } else {
+                    }
+                    else
+                    {
                         previous->next = current->next;
                     }
                     free(current);
 
                     return 0;
-                } else {
-                    return 1; // Colisão com obstáculo normal termina o jogo
                 }
+                else if (current->isTurtle)
+                {
+                    return 2;
+                    // give turtle message
+                }
+                else
+                {
+                    return 1; // Colisão com obstáculo normal termina o jogo
+                } // precisa de mais um else pra tartaruga
             }
             previous = current;
             current = current->next;
