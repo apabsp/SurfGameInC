@@ -138,6 +138,7 @@
         Texture2D specialEnemyTexture = LoadTexture("imagens/collectable1.png");
         Texture2D specialEnemyTexture2 = LoadTexture("imagens/tortuga.png");
         Texture2D waveTexture = LoadTexture("imagens/onda.png");
+        Texture2D fernando = LoadTexture("imagens/backgroundonda/matagal.png");
 
         SetTargetFPS(60);
 
@@ -286,7 +287,7 @@
 
             // Renderização
             BeginDrawing();
-            ClearBackground(SKYBLUE);
+            DrawTexture(fernando, 0, 0, WHITE);
 
             // nuvem    
             DrawClouds(clouds);
